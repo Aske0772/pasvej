@@ -607,7 +607,8 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .req-head b { display: inline-flex; align-items: baseline; gap: 8px; }
 .req-head b small { font-size: 13px; font-weight: 600; opacity: 0.7; }
 .req-head .delta { padding: 2px 8px; font-size: 12px; }
-.req-note { margin-top: 2px; font-size: 13px; opacity: 0.8; }
+.req-note { margin-top: 2px; font-size: 13px; color: rgba(255, 255, 255, 0.75); }
+.req-note b { color: #fff; font-weight: 800; }
 .result-chip { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
 @media (prefers-reduced-motion: reduce) { .answer-strip li { animation: none; } }
 

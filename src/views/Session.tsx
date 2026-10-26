@@ -243,7 +243,7 @@ function Result({
               <i className="mark" style={{ left: w(36) }} aria-hidden />
             </div>
             {/* Right under the bar it explains the mark, so the gap to 36 is plain. */}
-            <p className="req-note">Til prøven skal du have 36 af 45 rigtige.</p>
+            <p className="req-note">Til prøven skal du have <b>36</b> af <b>45</b> rigtige.</p>
           </div>
 
           <span className="glass-chip result-chip">
