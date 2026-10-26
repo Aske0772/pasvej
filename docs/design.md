@@ -90,7 +90,8 @@ Alt, der belønner brugeren, peger tilbage på at bestå prøven. Der er ingen p
 | Element | Hvornår | Hvorfor det ikke er pynt |
 |---|---|---|
 | Fluebenet "popper", og telefonen giver et kort vib | Når man svarer rigtigt | Øjeblikkelig feedback. Ved forkert svar vibrerer den i stedet kort to gange |
-| Chippen "3 rigtige i træk" | Ved 3 eller flere rigtige i træk i en øvelse | Synlig fremgang i øvelsen, som forsvinder ved første fejl |
+| Rødt flamme-mærke "3 rigtige i træk" | Ved 3 eller flere rigtige i træk i en øvelse. Det popper og får et glimt, hver gang tallet stiger; fra 5 lyser det stærkere, og flammen blafrer | Synlig fremgang i øvelsen, som forsvinder ved første fejl |
+| Belønning ved rigtigt svar | Det valgte svar svulmer en gang med en grøn ring, der klinger ud, små gnister i hvid, grøn og rød springer fra fluebenet, og spørgsmålets felt i fremgangslinjen blinker. Længere vibration, når en stime er i gang | Det rigtige svar føles som en lille gevinst. Kun når man selv vælger rigtigt, ikke når svaret vises efter en fejl |
 | Forventet score før og efter (fx "22,7 → 23,1 af 45, +0,3 rigtige"), med en streg ved 36 | Når en øvelse er slut | Viser, at øvelsen flytter det, der betyder noget. Vi bruger forventet score, fordi chancen for at bestå står på næsten 0 %, indtil man er tæt på 36, og derfor ikke ville vise nogen fremgang i starten |
 | "Næste: …" | Efter hvert trin i planen | Holder brugeren i flowet uden at sende dem tilbage til forsiden |
 | Grønt kort med "Klaret for i dag" og ugen | Når dagens plan er gennemført | Tydelig afslutning på dagen, der bygger en vane |

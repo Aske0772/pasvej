@@ -43,3 +43,6 @@ export const Globe = (p: P) => (
 export const Text = (p: P) => <Svg {...p}><path d="M5 6h14M5 12h14M5 18h9" /></Svg>
 export const Redo = (p: P) => <Svg {...p}><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.6" /><path d="M4 4v4.6h4.6" /></Svg>
 export const Flag = (p: P) => <Svg {...p}><path d="M5 21V4M5 4h11l-2 4 2 4H5" /></Svg>
+export const Flame = (p: P) => (
+  <Svg {...p}><path d="M12 21c-3.9 0-6.5-2.6-6.5-6.1 0-3.4 2.4-5.4 3.7-7.6.4 1.8 1.4 3 2.6 3.6-.2-3 1.1-5.6 3.4-7.4.2 3 1.9 4.6 3 6.5.7 1.2 1.3 2.6 1.3 4.6 0 3.6-2.8 6.4-7.5 6.4z" /></Svg>
+)

@@ -4,13 +4,17 @@ import { QUESTIONS } from '../data/questions'
 import { sourceLabel } from '../data/source'
 import { topicById } from '../data/topics'
 import { withShuffledOptions } from '../engine/exam'
-import { Check, Link, Redo, X } from './icons'
+import { Check, Flame, Link, Redo, X } from './icons'
 import { buzz } from './ui'
 
 const KEYS = ['A', 'B', 'C', 'D']
 const LANG_NAME: Record<Lang, string> = { da: 'Dansk', en: 'English' }
-/** Correct answers in a row before the streak chip shows. */
+/** Correct answers in a row before the streak badge shows. */
 const COMBO_FROM = 3
+/** From here the badge burns brighter. */
+const COMBO_HOT = 5
+/** Particles in the burst on a correct answer: alternating white, green and red. */
+const BURST = Array.from({ length: 12 }, (_, k) => ({ a: `${k * 30}deg`, c: ['#fff', 'var(--good)', '#ff3b55'][k % 3], d: `${26 + (k % 3) * 8}px` }))
 
 interface Props {
   title: string
@@ -46,7 +50,8 @@ export function Session({ title, questionIds, helpLang, score, next, onAnswer, o
     if (picked !== null) return
     setPicked(i)
     const ok = i === q.answer
-    buzz(ok ? 12 : [30, 40, 30])
+    // A longer tick once a streak is running, so the run is felt as well as seen.
+    buzz(ok ? (combo + 1 >= COMBO_FROM ? [14, 50, 22] : 14) : [30, 40, 30])
     setResults((r) => [...r, ok])
     onAnswer(q.id, ok)
   }
@@ -97,9 +102,10 @@ export function Session({ title, questionIds, helpLang, score, next, onAnswer, o
           <div className="hero-chips">
             <span className="glass-chip">{topicById(q.topic).name.da}</span>
             {combo >= COMBO_FROM && (
-              // Keyed on the count so the chip pops each time the run grows.
-              <span key={combo} className="glass-chip combo" aria-live="polite">
-                {combo} rigtige i træk
+              // Keyed on the count so the badge pops and shines each time the run grows.
+              <span key={combo} className={`streak ${combo >= COMBO_HOT ? 'is-hot' : ''}`} aria-live="polite">
+                <Flame size={16} />
+                <b>{combo}</b> rigtige i træk
               </span>
             )}
           </div>
@@ -109,12 +115,21 @@ export function Session({ title, questionIds, helpLang, score, next, onAnswer, o
         <div className="options" role="group" aria-label="Svarmuligheder">
           {q.options.map((opt, i) => {
             const state = !answered ? '' : i === q.answer ? 'is-correct' : i === picked ? 'is-wrong' : 'is-dim'
+            // Only a right pick celebrates; revealing the answer after a wrong pick stays quiet.
+            const win = state === 'is-correct' && picked === i
             return (
-              <button key={i} type="button" className={`option ${state}`} disabled={answered} onClick={() => pick(i)}>
+              <button key={i} type="button" className={`option ${state} ${win ? 'is-win' : ''}`} disabled={answered} onClick={() => pick(i)}>
                 <span className="key">{KEYS[i]}</span>
                 <span>{opt}</span>
                 <span className="check">
                   {state === 'is-correct' ? <Check size={14} /> : state === 'is-wrong' ? <X size={14} /> : null}
+                  {win && (
+                    <span className="burst" aria-hidden>
+                      {BURST.map((b, k) => (
+                        <i key={k} style={{ '--a': b.a, '--c': b.c, '--d': b.d } as CSSProperties} />
+                      ))}
+                    </span>
+                  )}
                 </span>
               </button>
             )
