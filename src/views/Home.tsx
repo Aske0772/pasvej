@@ -13,6 +13,8 @@ interface Props {
   /** Day numbers with at least one finished session. */
   practicedDays: Set<number>
   today: number
+  /** Free tier: one mini-test a day, and "practise more" leads to the plans. */
+  freeTier: boolean
   onStartStep: (step: PlanStep, index: number) => void
   onPractice: () => void
 }
@@ -20,7 +22,7 @@ interface Props {
 const pct = (x: number) => Math.round(x * 100)
 const WEEKDAY = ['S', 'M', 'T', 'O', 'T', 'F', 'L']
 
-export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDays, today, onStartStep, onPractice }: Props) {
+export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDays, today, freeTier, onStartStep, onPractice }: Props) {
   const weak = readiness.pValues < readiness.pTotal ? 'values' : 'total'
   const done = plan.filter((_, i) => doneSteps.has(i)).length
   const nextIndex = plan.findIndex((_, i) => !doneSteps.has(i))
@@ -57,9 +59,13 @@ export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDa
         <section className="hero is-good">
           <p className="hero-label">Dagens plan</p>
           <p className="hero-title">Klaret for i dag.</p>
-          <p className="hero-note">Planen for i morgen er klar, når du kommer tilbage.</p>
-          <button type="button" className="secondary" onClick={onPractice}>
-            Øv mere
+          <p className="hero-note">
+            {freeTier
+              ? 'Din næste mini-prøve er klar i morgen. Vil du øve mere i dag, er alle spørgsmål med i Basis.'
+              : 'Planen for i morgen er klar, når du kommer tilbage.'}
+          </p>
+          <button type="button" className={freeTier ? 'primary' : 'secondary'} onClick={onPractice}>
+            {freeTier ? 'Se abonnementer' : 'Øv mere'}
           </button>
         </section>
       ) : (

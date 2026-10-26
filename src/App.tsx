@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { QUESTIONS } from './data/questions'
 import { TOPICS, topicById } from './data/topics'
 import { buildExam, isActive, shuffle, type ExamPaper } from './engine/exam'
-import { buildPlan, type PlanStep } from './engine/plan'
+import { FREE_DAILY_QUESTIONS, access, type Tier } from './data/plans'
+import { buildFreePlan, buildPlan, type PlanStep } from './engine/plan'
 import { readiness } from './engine/readiness'
 import { dayNumber } from './engine/srs'
 import { daysUntil, nextOpenSitting, streak, useAppState } from './store'
@@ -10,6 +11,7 @@ import { Exam } from './views/Exam'
 import { Home } from './views/Home'
 import { Book, Calendar, Clock, Home as HomeIcon, User } from './views/icons'
 import { Onboarding } from './views/Onboarding'
+import { Paywall } from './views/Paywall'
 import { Practice } from './views/Practice'
 import { Profile } from './views/Profile'
 import { Session } from './views/Session'
@@ -19,6 +21,7 @@ type Tab = 'home' | 'practice' | 'exam' | 'profile'
 type Overlay =
   | { kind: 'session'; title: string; ids: string[]; logKind: string }
   | { kind: 'exam'; paper: ExamPaper }
+  | { kind: 'paywall'; focus?: Tier }
   | null
 
 function diagnosticIds() {
@@ -28,10 +31,13 @@ function diagnosticIds() {
 }
 
 export function App() {
-  const { state, setProfile, answer, logSession, setPlan, reset } = useAppState()
+  const { state, setProfile, answer, logSession, setPlan, setSubscription, reset } = useAppState()
   const [tab, setTab] = useState<Tab>('home')
   const [overlay, setOverlay] = useState<Overlay>(null)
   const today = dayNumber()
+  const tier = state.subscription
+  const can = access(tier)
+  const upsell = (focus: Tier = 'basis') => setOverlay({ kind: 'paywall', focus })
 
   const examDate = state.profile?.examDate ?? nextOpenSitting().date
   // Only questions that can come up at the learner's sitting (current affairs expire).
@@ -43,6 +49,7 @@ export function App() {
   // topics that no longer exist after a question-bank update.
   const planIsValid =
     state.plan?.day === today &&
+    (state.plan.tier ?? null) === tier &&
     state.plan.steps.every(
       (s) => (!s.topic || TOPICS.some((t) => t.id === s.topic)) && s.questionIds.every((id) => QUESTIONS.some((q) => q.id === id)),
     )
@@ -50,13 +57,18 @@ export function App() {
   // Build today's plan when the home screen is shown and no valid one exists.
   useEffect(() => {
     if (state.profile && !overlay && !planIsValid) {
-      setPlan({ day: today, steps: buildPlan(relevant, state.cards, today, daysToExam, state.profile.dailyMinutes) })
+      const steps = can.fullPlan
+        ? buildPlan(relevant, state.cards, today, daysToExam, state.profile.dailyMinutes)
+        : buildFreePlan(relevant, state.cards, today, FREE_DAILY_QUESTIONS)
+      setPlan({ day: today, steps, tier: tier ?? undefined })
     }
-  }, [state.profile, planIsValid, relevant, state.cards, overlay, today, daysToExam, setPlan])
+  }, [state.profile, planIsValid, relevant, state.cards, overlay, today, daysToExam, setPlan, can.fullPlan, tier])
   const plan: PlanStep[] = planIsValid && state.plan ? state.plan.steps : []
-  const doneSteps = new Set(
-    state.log.filter((l) => l.day === today && l.kind.startsWith('plan:')).map((l) => Number(l.kind.slice(5))),
-  )
+  // The free mini-test is logged on its own, so upgrading the same day doesn't tick off a step.
+  const doneSteps = can.fullPlan
+    ? new Set(state.log.filter((l) => l.day === today && l.kind.startsWith('plan:')).map((l) => Number(l.kind.slice(5))))
+    : new Set(state.log.some((l) => l.day === today && l.kind === 'daily-free') ? [0] : [])
+  const firstTest = [...state.log].reverse().find((l) => l.kind === 'diagnostic')
 
   const startSession = (title: string, ids: string[], logKind = 'practice') =>
     setOverlay({ kind: 'session', title, ids, logKind })
@@ -78,7 +90,7 @@ export function App() {
       const nextIndex = current === null ? -1 : plan.findIndex((_, j) => j !== current && !doneSteps.has(j))
       const next =
         overlay.logKind === 'diagnostic'
-          ? { label: 'Se din plan', start: () => setOverlay(null) }
+          ? { label: 'Fortsæt', start: () => setOverlay(null) }
           : nextIndex >= 0
             ? {
                 label: `Næste: ${STEP_TITLE[plan[nextIndex].kind].toLowerCase()}`,
@@ -96,6 +108,32 @@ export function App() {
           onAnswer={answer}
           onDone={(c, t) => logSession(overlay.logKind, c, t)}
           onExit={() => setOverlay(null)}
+        />
+      )
+    }
+    if (overlay?.kind === 'paywall') {
+      return (
+        <Paywall
+          focus={overlay.focus}
+          current={tier}
+          onChoose={(t) => {
+            setSubscription(t)
+            setOverlay(null)
+          }}
+          onClose={() => setOverlay(null)}
+        />
+      )
+    }
+    // Right after the first test (or for anyone who hasn't chosen yet), a plan must be picked.
+    if (tier === null && !overlay) {
+      return (
+        <Paywall
+          firstTest={firstTest ? { correct: firstTest.correct, total: firstTest.total } : undefined}
+          current={null}
+          onChoose={(t) => {
+            setSubscription(t)
+            setTab('home')
+          }}
         />
       )
     }
@@ -123,8 +161,11 @@ export function App() {
             streak={streak(state.log)}
             practicedDays={new Set(state.log.map((l) => l.day))}
             today={today}
-            onStartStep={(step, i) => startSession('Dagens plan', step.questionIds, `plan:${i}`)}
-            onPractice={() => setTab('practice')}
+            freeTier={!can.fullPlan}
+            onStartStep={(step, i) =>
+              startSession(STEP_TITLE[step.kind], step.questionIds, can.fullPlan ? `plan:${i}` : 'daily-free')
+            }
+            onPractice={() => (can.practice ? setTab('practice') : upsell())}
           />
         )
       case 'practice':
@@ -133,11 +174,20 @@ export function App() {
             cards={state.cards}
             questions={relevant}
             examDate={examDate}
+            locked={!can.practice}
+            onLocked={() => upsell()}
             onStart={(title, ids) => startSession(title, ids)}
           />
         )
       case 'exam':
-        return <ExamIntro examDate={examDate} onStart={(paper) => setOverlay({ kind: 'exam', paper })} />
+        return (
+          <ExamIntro
+            examDate={examDate}
+            locked={!can.exam}
+            onUnlock={() => upsell()}
+            onStart={(paper) => setOverlay({ kind: 'exam', paper })}
+          />
+        )
       case 'profile':
         return (
           <Profile
@@ -146,6 +196,8 @@ export function App() {
               setProfile(p)
               setPlan(null)
             }}
+            tier={tier}
+            onChangePlan={() => upsell(tier ?? 'basis')}
             onReset={reset}
           />
         )
@@ -154,7 +206,7 @@ export function App() {
 
   if (!state.profile) return content
 
-  const showChrome = !overlay
+  const showChrome = !overlay && tier !== null
 
   return (
     <div className="app">
@@ -173,7 +225,17 @@ export function App() {
   )
 }
 
-function ExamIntro({ examDate, onStart }: { examDate: string; onStart: (paper: ExamPaper) => void }) {
+function ExamIntro({
+  examDate,
+  locked,
+  onUnlock,
+  onStart,
+}: {
+  examDate: string
+  locked: boolean
+  onUnlock: () => void
+  onStart: (paper: ExamPaper) => void
+}) {
   const paper = useMemo(() => buildExam(QUESTIONS, examDate), [examDate])
   const rows: [string, string][] = [
     ['Tid', `${paper.minutes} min`],
@@ -214,9 +276,18 @@ function ExamIntro({ examDate, onStart }: { examDate: string; onStart: (paper: E
         )}
       </section>
 
-      <button type="button" className="primary wide" onClick={() => onStart(buildExam(QUESTIONS, examDate))}>
-        Start prøven
-      </button>
+      {locked ? (
+        <>
+          <button type="button" className="primary wide" onClick={onUnlock}>
+            Lås op med Basis
+          </button>
+          <p className="small muted center">Den fulde prøve er med i Basis og Plus. Gratis har 1 mini-prøve om dagen.</p>
+        </>
+      ) : (
+        <button type="button" className="primary wide" onClick={() => onStart(buildExam(QUESTIONS, examDate))}>
+          Start prøven
+        </button>
+      )}
     </div>
   )
 }

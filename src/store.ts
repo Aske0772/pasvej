@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { Tier } from './data/plans'
 import type { ExamId, Lang } from './data/types'
 import type { PlanStep } from './engine/plan'
 import { dayNumber, review, type CardState } from './engine/srs'
@@ -23,7 +24,9 @@ export interface AppState {
   cards: Record<string, CardState>
   log: SessionLog[]
   /** Built once per day so finished steps stay ticked off. */
-  plan: { day: number; steps: PlanStep[] } | null
+  plan: { day: number; steps: PlanStep[]; tier?: Tier } | null
+  /** Chosen on the paywall after the first test; null until then. No payment is taken yet. */
+  subscription: Tier | null
 }
 
 /**
@@ -39,7 +42,7 @@ export const nextOpenSitting = (today = new Date().toISOString().slice(0, 10)) =
   SITTINGS.find((s) => s.deadline >= today) ?? SITTINGS[SITTINGS.length - 1]
 
 const KEY = 'pasvej:v1'
-const empty: AppState = { profile: null, cards: {}, log: [], plan: null }
+const empty: AppState = { profile: null, cards: {}, log: [], plan: null, subscription: null }
 
 function load(): AppState {
   try {
@@ -74,9 +77,11 @@ export function useAppState() {
 
   const setPlan = useCallback((plan: AppState['plan']) => setState((s) => ({ ...s, plan })), [])
 
+  const setSubscription = useCallback((subscription: Tier) => setState((s) => ({ ...s, subscription, plan: null })), [])
+
   const reset = useCallback(() => setState(empty), [])
 
-  return { state, setProfile, answer, logSession, setPlan, reset }
+  return { state, setProfile, answer, logSession, setPlan, setSubscription, reset }
 }
 
 export function streak(log: SessionLog[], today = dayNumber()): number {

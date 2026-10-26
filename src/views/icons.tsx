@@ -30,3 +30,6 @@ export const Minus = (p: P) => <Svg {...p}><path d="M5 12h14" /></Svg>
 export const Link = (p: P) => (
   <Svg {...p}><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></Svg>
 )
+export const Lock = (p: P) => (
+  <Svg {...p}><rect x="5" y="11" width="14" height="10" rx="2.5" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></Svg>
+)

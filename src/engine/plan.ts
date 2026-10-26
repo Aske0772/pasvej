@@ -4,7 +4,7 @@ import { isDue, type CardState } from './srs'
 import { topicMastery } from './readiness'
 import { shuffle } from './exam'
 
-export type StepKind = 'review' | 'weakest' | 'new' | 'mini-exam'
+export type StepKind = 'review' | 'weakest' | 'new' | 'mini-exam' | 'daily-free'
 
 export interface PlanStep {
   kind: StepKind
@@ -62,4 +62,23 @@ export function buildPlan(
     steps.push({ kind: 'mini-exam', minutes: Math.ceil((ids.length * SECONDS_PER_QUESTION) / 60), questionIds: ids })
   }
   return steps
+}
+
+/**
+ * The free tier's day: one mini-test of `count` questions, picked in the same order of value
+ * as the full plan (due mistakes, then the weakest topic, then unseen, then anything).
+ */
+export function buildFreePlan(questions: Question[], cards: Record<string, CardState>, today: number, count: number): PlanStep[] {
+  const picked: string[] = []
+  const add = (ids: string[]) => {
+    for (const id of ids) if (picked.length < count && !picked.includes(id)) picked.push(id)
+  }
+  add(shuffle(questions.filter((q) => isDue(cards[q.id], today)).map((q) => q.id)))
+  const weakest = TOPICS.map((t) => ({ id: t.id, m: topicMastery(questions, cards, t.id) }))
+    .filter((x): x is { id: string; m: number } => x.m !== null)
+    .sort((a, b) => a.m - b.m)[0]
+  if (weakest) add(shuffle(questions.filter((q) => q.topic === weakest.id).map((q) => q.id)).slice(0, 4))
+  add(shuffle(questions.filter((q) => !cards[q.id]).map((q) => q.id)))
+  add(shuffle(questions.map((q) => q.id)))
+  return [{ kind: 'daily-free', minutes: Math.ceil((picked.length * SECONDS_PER_QUESTION) / 60), questionIds: picked }]
 }

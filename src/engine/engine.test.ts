@@ -1,7 +1,8 @@
 import { binomial, passProbability, readiness } from './readiness'
 import { review, mastery, INTERVALS } from './srs'
 import { buildExam, withShuffledOptions } from './exam'
-import { buildPlan } from './plan'
+import { buildFreePlan, buildPlan } from './plan'
+import { FREE_DAILY_QUESTIONS, PLANS, access } from '../data/plans'
 import { QUESTIONS } from '../data/questions'
 import { CHAPTER_QUOTA, topicById } from '../data/topics'
 import { CURRENT, addMonths } from '../data/current'
@@ -155,5 +156,28 @@ describe('exam and plan', () => {
     const plan = buildPlan(QUESTIONS, {}, 0, 5, 15)
     expect(plan.some((s) => s.kind === 'new')).toBe(false)
     expect(plan.some((s) => s.kind === 'mini-exam')).toBe(true)
+  })
+})
+
+describe('subscriptions', () => {
+  it('gives the free tier one mini-test of 10 different questions a day', () => {
+    const steps = buildFreePlan(QUESTIONS, {}, 0, FREE_DAILY_QUESTIONS)
+    expect(steps).toHaveLength(1)
+    expect(steps[0].kind).toBe('daily-free')
+    expect(new Set(steps[0].questionIds).size).toBe(FREE_DAILY_QUESTIONS)
+  })
+
+  it('puts due mistakes first in the free mini-test', () => {
+    const wrong = review(undefined, false, 5)
+    const steps = buildFreePlan(QUESTIONS, { [QUESTIONS[3].id]: wrong }, 5, FREE_DAILY_QUESTIONS)
+    expect(steps[0].questionIds[0]).toBe(QUESTIONS[3].id)
+  })
+
+  it('opens practice and the full exam only on paid plans, residence exams only on Plus', () => {
+    expect(access('free')).toEqual({ practice: false, exam: false, fullPlan: false, residence: false })
+    expect(access('basis')).toEqual({ practice: true, exam: true, fullPlan: true, residence: false })
+    expect(access('plus').residence).toBe(true)
+    expect(PLANS.map((p) => p.price)).toEqual([0, 59, 109])
+    expect(PLANS.map((p) => p.level)).toEqual([1, 2, 3])
   })
 })

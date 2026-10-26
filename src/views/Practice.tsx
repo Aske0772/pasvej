@@ -4,7 +4,7 @@ import { TOPICS } from '../data/topics'
 import type { CardState } from '../engine/srs'
 import { topicMastery } from '../engine/readiness'
 import { shuffle } from '../engine/exam'
-import { Check } from './icons'
+import { Check, Lock } from './icons'
 
 /** Topic mastery at which a chapter counts as mastered. */
 const MASTERED = 0.8
@@ -15,6 +15,9 @@ interface Props {
   /** Questions that can come up at the learner's sitting. */
   questions: Question[]
   examDate: string
+  /** Free tier: themes and mistakes are visible but open the plans instead. */
+  locked: boolean
+  onLocked: () => void
   onStart: (title: string, ids: string[]) => void
 }
 
@@ -23,7 +26,7 @@ const GROUPS = [
   { title: 'Uden for lærematerialet', sections: ['values', 'current'] },
 ]
 
-export function Practice({ cards, questions, examDate, onStart }: Props) {
+export function Practice({ cards, questions, examDate, locked, onLocked, onStart }: Props) {
   const mistakes = questions.filter((q) => cards[q.id] && cards[q.id].box === 0).map((q) => q.id)
 
   return (
@@ -43,9 +46,15 @@ export function Practice({ cards, questions, examDate, onStart }: Props) {
             {mistakes.length}
           </span>
         </div>
-        <button type="button" className="primary wide" disabled={!mistakes.length} onClick={() => onStart('Dine fejl', shuffle(mistakes))}>
-          {mistakes.length ? 'Øv dine fejl' : 'Ingen fejl lige nu'}
-        </button>
+        {locked ? (
+          <button type="button" className="primary wide" onClick={onLocked}>
+            <Lock size={16} /> Øv dine fejl med Basis
+          </button>
+        ) : (
+          <button type="button" className="primary wide" disabled={!mistakes.length} onClick={() => onStart('Dine fejl', shuffle(mistakes))}>
+            {mistakes.length ? 'Øv dine fejl' : 'Ingen fejl lige nu'}
+          </button>
+        )}
       </section>
 
       {GROUPS.map((g) => (
@@ -59,7 +68,12 @@ export function Practice({ cards, questions, examDate, onStart }: Props) {
               const chips = (
                 <span className="tile-chips">
                   {t.chapter && <span className="glass-chip">Kap. {t.chapter}</span>}
-                  {qs.length > 0 && <span className="glass-chip tile-count">{qs.length} spm</span>}
+                  {qs.length > 0 && (
+                    <span className="glass-chip tile-count">
+                      {locked && <Lock size={12} />}
+                      {qs.length} spm
+                    </span>
+                  )}
                 </span>
               )
               if (!qs.length) {
@@ -78,7 +92,13 @@ export function Practice({ cards, questions, examDate, onStart }: Props) {
               }
               const mastered = m !== null && m >= MASTERED
               return (
-                <button key={t.id} type="button" className="tile" onClick={() => onStart(t.name.da, shuffle(qs.map((q) => q.id)))}>
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`tile ${locked ? 'is-locked' : ''}`}
+                  aria-label={locked ? `${t.name.da} – låst, kræver Basis` : undefined}
+                  onClick={() => (locked ? onLocked() : onStart(t.name.da, shuffle(qs.map((q) => q.id))))}
+                >
                   <TopicPhoto id={t.id} />
                   {chips}
                   <span className="tile-body">

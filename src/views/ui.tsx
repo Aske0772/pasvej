@@ -48,11 +48,12 @@ export function Chip({ on, title, sub, onClick }: { on: boolean; title: ReactNod
   )
 }
 
-export const STEP_TITLE: Record<'review' | 'weakest' | 'new' | 'mini-exam', string> = {
+export const STEP_TITLE: Record<'review' | 'weakest' | 'new' | 'mini-exam' | 'daily-free', string> = {
   review: 'Gentag dine fejl',
   weakest: 'Dit svageste tema',
   new: 'Nye spørgsmål',
   'mini-exam': 'Mini-prøve',
+  'daily-free': 'Dagens mini-prøve',
 }
 
 /** Short haptic tick on phones that support it; silent elsewhere. */
