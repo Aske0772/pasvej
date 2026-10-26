@@ -74,3 +74,18 @@ export function topicMastery(questions: Question[], cards: Record<string, CardSt
   if (!qs.length) return null
   return qs.reduce((s, q) => s + mastery(cards[q.id]), 0) / qs.length
 }
+
+/** Plain counts for Home: distinct questions answered out of the bank, and right answers out of all answers. */
+export function practiceStats(questions: Question[], cards: Record<string, CardState>) {
+  let covered = 0
+  let answers = 0
+  let correct = 0
+  for (const q of questions) {
+    const c = cards[q.id]
+    if (!c || !c.seen) continue
+    covered += 1
+    answers += c.seen
+    correct += c.correct
+  }
+  return { covered, total: questions.length, answers, correct }
+}

@@ -719,22 +719,23 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
   .option.is-win::after, .burst { display: none; }
 }
 
-/* Pass chance on Home: a ring with the figure inside, then the two requirements as twin tiles.
-   The tile holding the learner back gets a red edge and a "Fokus" tag instead of a sentence. */
-.ready-top { display: flex; align-items: center; gap: 18px; }
-.ready-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
-.ready-meta .hero-label { white-space: normal; }
-.ring { position: relative; width: 104px; height: 104px; flex: none; }
+/* Progress on Home: two count rings side by side (questions covered, right answers), then the
+   expected score per requirement as twin tiles. The tile holding the learner back gets a red
+   edge and a "Fokus" tag instead of a sentence. No pass percentage: we don't promise one. */
+.count-rings { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+.count-ring { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.count-label { font-size: 13px; font-weight: 650; color: rgba(255, 255, 255, 0.72); }
+.ring { position: relative; width: 96px; height: 96px; flex: none; }
 .ring svg { display: block; transform: rotate(-90deg); }
-.ring circle { fill: none; stroke-width: 9; }
+.ring circle { fill: none; stroke-width: 8; }
 .ring-track { stroke: rgba(255, 255, 255, 0.1); }
 .ring-fill { stroke: #fff; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.ring.is-good .ring-fill { stroke: var(--good); }
+.count-ring.is-good .ring-fill { stroke: var(--good); }
 .ring-num {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-family: var(--display); font-size: 34px; font-weight: 800; letter-spacing: -0.04em;
+  font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -0.04em;
 }
-.ring-num small { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin: 8px 0 0 2px; }
+.ring-num small { font-family: var(--body); font-size: 13px; font-weight: 600; letter-spacing: 0; opacity: 0.6; margin: 8px 0 0 1px; }
 
 .goal-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .goal-tile {

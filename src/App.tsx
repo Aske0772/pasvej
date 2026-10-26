@@ -4,7 +4,7 @@ import { TOPICS, topicById } from './data/topics'
 import { buildExam, isActive, shuffle, type ExamPaper } from './engine/exam'
 import { FREE_DAILY_QUESTIONS, access, type Tier } from './data/plans'
 import { buildFreePlan, buildPlan, type PlanStep } from './engine/plan'
-import { readiness } from './engine/readiness'
+import { practiceStats, readiness } from './engine/readiness'
 import { dayNumber } from './engine/srs'
 import { daysUntil, nextOpenSitting, streak, useAppState } from './store'
 import { Exam } from './views/Exam'
@@ -43,6 +43,7 @@ export function App() {
   // Only questions that can come up at the learner's sitting (current affairs expire).
   const relevant = useMemo(() => QUESTIONS.filter((q) => isActive(q, examDate)), [examDate])
   const r = useMemo(() => readiness(relevant, state.cards), [relevant, state.cards])
+  const stats = useMemo(() => practiceStats(relevant, state.cards), [relevant, state.cards])
   const daysToExam = state.profile ? daysUntil(state.profile.examDate) : 0
 
   // A saved plan is stale if it is from another day or points at questions or
@@ -155,6 +156,7 @@ export function App() {
         return (
           <Home
             readiness={r}
+            stats={stats}
             plan={plan}
             doneSteps={doneSteps}
             daysToExam={daysToExam}
@@ -232,7 +234,7 @@ function ExamIntro({
   const rows: [string, string][] = [
     ['Tid', `${paper.minutes} min`],
     ['Krav i alt', `${paper.passTotal} rigtige`],
-    ['Værdikrav', `${paper.passValues} af ${paper.valuesCount}`],
+    ['Danske værdier', `${paper.passValues} af ${paper.valuesCount}`],
     ['Aktuelle spørgsmål', `${paper.currentCount} af 5`],
   ]
   return (

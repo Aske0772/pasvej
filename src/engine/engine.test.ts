@@ -1,4 +1,4 @@
-import { binomial, passProbability, readiness } from './readiness'
+import { binomial, passProbability, practiceStats, readiness } from './readiness'
 import { review, mastery, INTERVALS } from './srs'
 import { buildExam, withShuffledOptions } from './exam'
 import { buildFreePlan, buildPlan } from './plan'
@@ -70,6 +70,13 @@ describe('readiness', () => {
     expect(r.pValues).toBeLessThan(0.4)
     expect(r.pass).toBeLessThanOrEqual(r.pValues)
     expect(r.pass).toBeLessThanOrEqual(r.pTotal)
+  })
+
+  it('counts distinct questions covered and right answers out of all answers', () => {
+    const [a, b] = QUESTIONS
+    const twice = review(review(undefined, false, 0), true, 1)
+    const stats = practiceStats(QUESTIONS, { [a.id]: twice, [b.id]: review(undefined, true, 0) })
+    expect(stats).toEqual({ covered: 2, total: QUESTIONS.length, answers: 3, correct: 2 })
   })
 })
 

@@ -7,7 +7,7 @@ boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt p�
 | Lag | Hvad | Tekst på det |
 |---|---|---|
 | **Grund** | Rød gradient fra `#D4152F` øverst til `#9A0C24` nederst | Hvid. Sekundær tekst er hvid med 92 % dækning |
-| **Kort** | Alle kort og bokse (chancen for at bestå, plan, spørgsmål, svar, forklaringer, valg, paneler): grafit med en blød lodret gradient (`#2C2D31` til `#1E1F22`), en hårfin kant og en lys kant foroven | Hvid. Sekundær tekst er hvid med 62 % dækning |
+| **Kort** | Alle kort og bokse (din fremgang, plan, spørgsmål, svar, forklaringer, valg, paneler): grafit med en blød lodret gradient (`#2C2D31` til `#1E1F22`), en hårfin kant og en lys kant foroven | Hvid. Sekundær tekst er hvid med 62 % dækning |
 
 Kortene var tidligere hvidt papir. Inde i et kort er papirets farvetokens byttet om (`--ink` er hvid, `--line` er
 hvid med 10 %, grøn er lysere `#2FBF6B`), så valg, streger og svarfarver læses rigtigt på mørkt. Svarfelter har altid en
@@ -75,13 +75,13 @@ Problemer i den første version, og hvordan de er løst:
 ## Gestaltprincipper, og hvor de bruges
 | Princip | Hvor | Hvad det gør |
 |---|---|---|
-| **Figur og grund** | Hver skærm har ét mørkt kort: chancen for at bestå, spørgsmålet eller resultatet | Øjet lander først på det vigtigste |
+| **Figur og grund** | Hver skærm har ét vigtigste kort: din fremgang, spørgsmålet eller resultatet | Øjet lander først på det vigtigste |
 | **Fokuspunkt** | Én rød knap pr. skærm, fx "Start dagens plan", "Næste" eller "Start prøven" | Brugeren ved altid, hvad næste skridt er |
 | **Nærhed og fælles område** | Dagens plan og "Din uge" ligger i samme boks. Prøvens fejl grupperes pr. kapitel | Det daglige og vanen hører sammen, og det man skal læse op på, samles ét sted |
 | **Kontinuitet** | Planens trin er forbundet af en linje, og linjen bliver grøn, når trinnet er klaret. Efter et trin tilbydes næste trin direkte | Dagen føles som én vej, ikke tre opgaver |
 | **Lighed** | Alt, der kan trykkes på, er et grafitkort med pil. Ting, der ikke er klar endnu, har stiplet kant uden pil (aktuelt, låste prøver) | Det er tydeligt, hvad der er interaktivt |
 | **Fælles skæbne** | Det rigtige svar, flueben og "rigtige i træk" animeres samtidigt | Belønningen opleves som én begivenhed |
-| **Lukning** | Ugens syv felter og planens segmenter "fyldes op". Chancen for at bestå er en ring, der lukker sig (grøn fra 70 %), og de to krav står som to ens fliser med en streg ved kravet (36 af 45 og 4 af 5). Den flise, der holder dig mest tilbage, har rød kant og mærket "Fokus" i stedet for en forklarende sætning | Et ufærdigt mønster motiverer, og afstanden til målet kan ses |
+| **Lukning** | Ugens syv felter og planens segmenter "fyldes op". "Din fremgang" er to ringe, der lukker sig: spørgsmål gennemgået (hvid) og rigtige svar (grøn). Vi viser ingen procent for at bestå, fordi vi ikke kan love den. Under "Forventet til prøven" står de to krav som to ens fliser med en streg ved kravet (36 af 45 og 4 af 5). Den flise, der holder dig mest tilbage, har rød kant og mærket "Fokus" i stedet for en forklarende sætning | Et ufærdigt mønster motiverer, og afstanden til målet kan ses |
 | **Prägnanz (enkelhed)** | Statistikfelterne med "svar i alt" og "læremateriale %" er fjernet, fordi de gentog kortet | Mindre støj og ét tal at forholde sig til |
 
 ## Gamification: kun det, der hænger sammen med målet

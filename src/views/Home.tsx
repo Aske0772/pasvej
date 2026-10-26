@@ -1,4 +1,4 @@
-import type { Readiness } from '../engine/readiness'
+import type { Readiness, practiceStats } from '../engine/readiness'
 import type { PlanStep } from '../engine/plan'
 import { topicById } from '../data/topics'
 import { Check } from './icons'
@@ -6,6 +6,7 @@ import { STEP_TITLE } from './ui'
 
 interface Props {
   readiness: Readiness
+  stats: ReturnType<typeof practiceStats>
   plan: PlanStep[]
   doneSteps: Set<number>
   daysToExam: number
@@ -19,10 +20,9 @@ interface Props {
   onPractice: () => void
 }
 
-const pct = (x: number) => Math.round(x * 100)
 const WEEKDAY = ['S', 'M', 'T', 'O', 'T', 'F', 'L']
 
-export function Home({ readiness, plan, doneSteps, daysToExam, streak, practicedDays, today, freeTier, onStartStep, onPractice }: Props) {
+export function Home({ readiness, stats, plan, doneSteps, daysToExam, streak, practicedDays, today, freeTier, onStartStep, onPractice }: Props) {
   const weak = readiness.pValues < readiness.pTotal ? 'values' : 'total'
   const done = plan.filter((_, i) => doneSteps.has(i)).length
   const nextIndex = plan.findIndex((_, i) => !doneSteps.has(i))
@@ -37,19 +37,24 @@ export function Home({ readiness, plan, doneSteps, daysToExam, streak, practiced
         </span>
       </header>
 
-      {/* The goal: one figure on the page, as a ring. The two requirements sit underneath as
-          twin tiles (similarity); the one holding you back is marked "Fokus" instead of a sentence. */}
-      <section className="hero" aria-labelledby="readiness-h">
-        <div className="ready-top">
-          <Ring value={readiness.pass} />
-          <div className="ready-meta">
-            <p id="readiness-h" className="hero-label">Chance for at bestå</p>
-            <Confidence level={readiness.confidence} answers={readiness.answers} />
-          </div>
+      {/* Progress in plain counts, no promises: two rings side by side (similarity), then the
+          expected score per requirement as twin tiles. The one holding you back is marked "Fokus". */}
+      <section className="hero" aria-labelledby="progress-h">
+        <p id="progress-h" className="hero-label">Din fremgang</p>
+        <div className="count-rings">
+          <Ring value={stats.covered / Math.max(stats.total, 1)} num={stats.covered} of={stats.total} label="Spørgsmål gennemgået" />
+          <Ring
+            value={stats.answers ? stats.correct / stats.answers : 0}
+            num={stats.correct}
+            of={stats.answers}
+            label="Rigtige svar"
+            good
+          />
         </div>
+        <p className="hero-label">Forventet til prøven</p>
         <div className="goal-tiles">
-          <GoalTile label="Rigtige i alt" value={readiness.expectedTotal} goal={36} max={45} focus={weak === 'total'} />
-          <GoalTile label="Værdispørgsmål" value={readiness.expectedValues} goal={4} max={5} focus={weak === 'values'} />
+          <GoalTile label="I alt" value={readiness.expectedTotal} goal={36} max={45} focus={weak === 'total'} />
+          <GoalTile label="Danske værdier" value={readiness.expectedValues} goal={4} max={5} focus={weak === 'values'} />
         </div>
       </section>
 
@@ -147,21 +152,24 @@ function Week({ practicedDays, today }: { practicedDays: Set<number>; today: num
 }
 
 /** Expected score against the pass mark, which is drawn as a line on the bar. */
-/** Pass chance as a ring with the percentage inside; green once it is likely (70 % or more). */
-function Ring({ value }: { value: number }) {
-  const r = 44
+/** A count as a ring: the number inside, the share as the filled arc, the label underneath. */
+function Ring({ value, num, of, label, good }: { value: number; num: number; of: number; label: string; good?: boolean }) {
+  const r = 40
   const c = 2 * Math.PI * r
   return (
-    <div className={`ring ${value >= 0.7 ? 'is-good' : ''}`} role="img" aria-label={`${pct(value)} % chance for at bestå`}>
-      <svg viewBox="0 0 104 104" width="104" height="104" aria-hidden>
-        <circle className="ring-track" cx="52" cy="52" r={r} />
-        {/* At 0 % the round line cap would still draw a dot, so leave the fill out. */}
-        {pct(value) > 0 && <circle className="ring-fill" cx="52" cy="52" r={r} strokeDasharray={c} strokeDashoffset={c * (1 - value)} />}
-      </svg>
-      <span className="ring-num" aria-hidden>
-        {pct(value)}
-        <small>%</small>
-      </span>
+    <div className={`count-ring ${good ? 'is-good' : ''}`}>
+      <div className="ring" role="img" aria-label={`${label}: ${num} af ${of}`}>
+        <svg viewBox="0 0 96 96" width="96" height="96" aria-hidden>
+          <circle className="ring-track" cx="48" cy="48" r={r} />
+          {/* At 0 the round line cap would still draw a dot, so leave the fill out. */}
+          {value > 0.005 && <circle className="ring-fill" cx="48" cy="48" r={r} strokeDasharray={c} strokeDashoffset={c * (1 - value)} />}
+        </svg>
+        <span className="ring-num" aria-hidden>
+          {num}
+          <small>/{of}</small>
+        </span>
+      </div>
+      <span className="count-label">{label}</span>
     </div>
   )
 }
@@ -187,20 +195,5 @@ function GoalTile({ label, value, goal, max, focus }: { label: string; value: nu
         krav <b>{goal}</b>
       </p>
     </div>
-  )
-}
-
-function Confidence({ level, answers }: { level: Readiness['confidence']; answers: number }) {
-  const on = level === 'low' ? 1 : level === 'medium' ? 2 : 3
-  const label = level === 'low' ? 'Foreløbigt' : level === 'medium' ? 'Rimeligt sikkert' : 'Sikkert'
-  return (
-    <span className="glass-chip" title={`Bygger på ${answers} svar`}>
-      <span className="dots" aria-hidden>
-        {[1, 2, 3].map((n) => (
-          <i key={n} className={n <= on ? 'on' : ''} />
-        ))}
-      </span>
-      {label}
-    </span>
   )
 }

@@ -13,7 +13,7 @@ npm run aktuelt # hvilke aktuelle spørgsmål tæller til de kommende prøver
 
 Aktuelle spørgsmål tilføjes i `src/data/current.ts`. Se [docs/aktuelt.md](docs/aktuelt.md).
 
-- `src/engine/` – logikken: chance for at bestå (begge krav), Leitner-repetition, daglig plan og prøvebygger.
+- `src/engine/` – logikken: fremgang og forventet score (begge krav), Leitner-repetition, daglig plan og prøvebygger.
 - `src/data/` – lærematerialets 6 kapitler som temaer og 88 egne spørgsmål. Hvert spørgsmål har et kildeafsnit og en udgave (se [docs/proeve-research.md](docs/proeve-research.md)).
 - `src/views/` – onboarding/diagnose, hjem, øv, prøvesimulering og profil.
 

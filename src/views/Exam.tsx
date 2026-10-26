@@ -78,7 +78,7 @@ export function Exam({ paper, onAnswer, onDone, onExit }: Props) {
             </p>
             <Requirement label={`Mindst ${paper.passTotal} rigtige i alt`} value={total} target={paper.passTotal} max={questions.length} />
             <Requirement
-              label={`Mindst ${paper.passValues} af ${paper.valuesCount} værdispørgsmål`}
+              label={`Mindst ${paper.passValues} af ${paper.valuesCount} om danske værdier`}
               value={valuesOk}
               target={paper.passValues}
               max={paper.valuesCount}

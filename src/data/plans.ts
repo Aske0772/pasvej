@@ -23,7 +23,7 @@ export interface Plan {
 
 const FREE_FEATURES: Feature[] = [
   { text: 'Forklaringer på dansk og engelsk' },
-  { text: 'Din chance for at bestå' },
+  { text: 'Din fremgang og forventet score til prøven' },
 ]
 
 const BASIS_FEATURES: Feature[] = [
