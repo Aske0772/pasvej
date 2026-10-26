@@ -256,12 +256,14 @@ function ExamIntro({
       </section>
 
       <section className="summary">
-        {rows.map(([k, v]) => (
-          <div key={k} className="req-head">
-            <span>{k}</span>
-            <b>{v}</b>
-          </div>
-        ))}
+        <div className="info-rows">
+          {rows.map(([k, v]) => (
+            <div key={k} className="req-head info-row">
+              <span>{k}</span>
+              <b>{v}</b>
+            </div>
+          ))}
+        </div>
         {paper.ids.length < 45 && (
           <p className="small muted">
             Den rigtige prøve har 45 spørgsmål og kræver 36 rigtige.

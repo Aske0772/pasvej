@@ -752,3 +752,10 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .goal-tile-foot b { color: #fff; font-weight: 800; }
 .goal-tile.is-focus .meter span { background: #ff6b7d; }
 @media (prefers-reduced-motion: reduce) { .ring-fill { transition: none; } }
+
+/* Fact rows (exam intro): a faint line between rows so the eye can run along each one. */
+.info-rows { display: flex; flex-direction: column; }
+.info-row { padding: 12px 0; font-size: 15px; }
+.info-row:first-child { padding-top: 0; }
+.info-row + .info-row { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.info-rows + p { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
