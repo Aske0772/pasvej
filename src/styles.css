@@ -41,7 +41,8 @@
   --shadow: 0 24px 48px -24px rgba(40, 0, 8, 0.6);
   --lift: 0 10px 24px -12px rgba(60, 0, 10, 0.55);
   --display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
-  --body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Body text: Instrument Sans, a refined grotesque that stays readable at 12–13 px. */
+  --body: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   /* The wordmark only: a high-contrast Didone serif. */
   --brand: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
   --hero-bg: #17181b;

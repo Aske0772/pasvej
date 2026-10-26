@@ -1,6 +1,7 @@
 # Pasvej – designregler
 
-Pasvej følger samme designfamilie som idebankens mad-app (Mæt): Bricolage Grotesque til overskrifter, Bodoni-ordmærket,
+Pasvej følger samme designfamilie som idebankens mad-app (Mæt): Bricolage Grotesque til overskrifter og tal, Instrument Sans
+til brødtekst og små etiketter (en raffineret grotesk, der stadig er let at læse ved 12–13 px), Bodoni-ordmærket,
 boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt på rødt**.
 
 ## To lag
