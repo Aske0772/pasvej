@@ -3,39 +3,41 @@
 Pasvej følger samme designfamilie som idebankens mad-app (Mæt): Bricolage Grotesque til overskrifter, Bodoni-ordmærket,
 boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt på rødt**.
 
-## Tre lag
+## To lag
 | Lag | Hvad | Tekst på det |
 |---|---|---|
 | **Grund** | Rød gradient fra `#D4152F` øverst til `#9A0C24` nederst | Hvid. Sekundær tekst er hvid med 92 % dækning |
-| **Papir** | Hvide kort og bokse til indhold (plan, svar, forklaringer, valg) | Sort og grå |
-| **Blæk** | Ét mørkt kort pr. skærm til det vigtigste (chancen for at bestå, spørgsmålet) | Hvid |
+| **Kort** | Alle kort og bokse (chancen for at bestå, plan, spørgsmål, svar, forklaringer, valg, paneler): grafit med en blød lodret gradient (`#2C2D31` til `#1E1F22`), en hårfin kant og en lys kant foroven | Hvid. Sekundær tekst er hvid med 62 % dækning |
 
-**Paneler** (Profil og "Dine fejl" under Træn) er mørke kort i samme blæk-familie, med en svag rød glød langs
-venstre kant og en prikket struktur, der fader ud fra toppen. Hver række er bygget ens (lighed): rød ikonflise, titel og
-undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og en hvid
-afkrydsning. Hovedhandlingen på et panel er den røde pille.
+Kortene var tidligere hvidt papir. Inde i et kort er papirets farvetokens byttet om (`--ink` er hvid, `--line` er
+hvid med 10 %, grøn er lysere `#2FBF6B`), så valg, streger og svarfarver læses rigtigt på mørkt. Svarfelter har altid en
+fast bund, så en gennemsigtig grøn eller grå aldrig lader det røde skinne igennem.
+
+**Paneler** (Profil og "Dine fejl" under Træn) har samme grafitflade. Hver række er bygget ens (lighed): rød ikonflise,
+titel og undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og
+en hvid afkrydsning. Hovedhandlingen på et kort er den røde pille.
 
 **Ingen header.** Som i en app starter hver skærm med sin egen store titel, og dagene til prøven står i Hjems titellinje.
 Toppen holder afstand til telefonens statuslinje (`env(safe-area-inset-top)`). **Fanebjælken** i bunden er det eneste faste
 element: hvidt papir, der rammer den røde grund ind (5,3:1 til 8,6:1 mod det røde). Den aktive fane er rød, inaktive er grå
 (5,4:1 på hvid). Fanerne hedder Hjem, Træn, Prøve og Profil.
 
-Succes (prøve bestået, dagen klaret, alt rigtigt) vises som **papir med grønt**, ikke som et grønt kort. Grønt direkte på rødt
+Succes (prøve bestået, dagen klaret, alt rigtigt) vises som **grønt på et grafitkort**, ikke som et grønt kort. Grønt direkte på rødt
 står dårligt i kontrast og ligner jul.
 
 ## Hovedknappen vender sig efter underlaget
 - **På den røde grund:** hvid pille med rød tekst og en lille skygge, fx "Næste", "Start prøven" og "Start testen".
-- **På papir:** rød pille med hvid tekst, fx "Start dagens plan" og "Træn dine fejl".
-- **Sekundære knapper:** glas (hvid med 16 % dækning og hvid tekst) på grunden, grå på papir.
+- **På et kort:** rød pille med hvid tekst, fx "Start dagens plan" og "Træn dine fejl".
+- **Sekundære knapper:** glas (hvid med 16 % dækning og hvid tekst) på grunden, lys grå glas på et kort.
 
 Det giver altid størst kontrast og gentager flaget: hvid på rød, rød på hvid.
 
 ## Farvernes roller
 | Farve | Betyder | Bruges aldrig til |
 |---|---|---|
-| Rød | Pasvej (grunden) og hovedknappen på papir | Forkerte svar og fejl |
+| Rød | Pasvej (grunden) og hovedknappen på kort | Forkerte svar og fejl |
 | Hvid | Hovedknappen på grunden. På grunden betyder hvid også "rigtigt" (fx i fremskridtsbjælken øverst), fordi grønt ikke kan læses på rødt | – |
-| Grøn | Rigtigt, klaret, mestret (på papir) | Knapper |
+| Grøn | Rigtigt, klaret, mestret (på kort) | Knapper |
 | Sort og grå | Neutral: valgt svar, fremskridt, forkert svar (sort kryds og overstreget grå tekst) | – |
 
 Når rød er brandfarven, må rød ikke også betyde "forkert". Ellers kommer brugeren til at forbinde appen med at fejle.
@@ -73,7 +75,7 @@ Problemer i den første version, og hvordan de er løst:
 | **Fokuspunkt** | Én rød knap pr. skærm, fx "Start dagens plan", "Næste" eller "Start prøven" | Brugeren ved altid, hvad næste skridt er |
 | **Nærhed og fælles område** | Dagens plan og "Din uge" ligger i samme boks. Prøvens fejl grupperes pr. kapitel | Det daglige og vanen hører sammen, og det man skal læse op på, samles ét sted |
 | **Kontinuitet** | Planens trin er forbundet af en linje, og linjen bliver grøn, når trinnet er klaret. Efter et trin tilbydes næste trin direkte | Dagen føles som én vej, ikke tre opgaver |
-| **Lighed** | Alt, der kan trykkes på, er en hvid boks med pil. Ting, der ikke er klar endnu, har stiplet kant uden pil (aktuelt, låste prøver) | Det er tydeligt, hvad der er interaktivt |
+| **Lighed** | Alt, der kan trykkes på, er et grafitkort med pil. Ting, der ikke er klar endnu, har stiplet kant uden pil (aktuelt, låste prøver) | Det er tydeligt, hvad der er interaktivt |
 | **Fælles skæbne** | Det rigtige svar, flueben og "rigtige i træk" animeres samtidigt | Belønningen opleves som én begivenhed |
 | **Lukning** | Ugens syv felter og planens segmenter "fyldes op". Bjælkerne på kortet med chancen for at bestå har en streg ved kravet (36 af 45 og 4 af 5) | Et ufærdigt mønster motiverer, og afstanden til målet kan ses |
 | **Prägnanz (enkelhed)** | Statistikfelterne med "svar i alt" og "læremateriale %" er fjernet, fordi de gentog kortet | Mindre støj og ét tal at forholde sig til |

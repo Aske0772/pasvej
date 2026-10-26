@@ -2,10 +2,10 @@
    idebanken meal app (Mæt): Bricolage Grotesque for display, a Bodoni wordmark, boxes and
    pill buttons.
 
-   Three layers (figure and ground, see docs/design.md):
+   Two layers (figure and ground, see docs/design.md):
    1. Ground  – Dannebrog-red gradient. Text on it is white.
-   2. Paper   – white boxes and cards for content. Text on it is ink.
-   3. Ink     – one dark card per screen for the main thing (pass chance, the question).
+   2. Cards   – every box and card is graphite (see "Cards" at the end). The rules below were
+                written for white paper; inside a card the paper tokens are remapped to dark.
 
    Colour roles:
    - red   = the brand and the ground. Never "wrong".
@@ -45,6 +45,9 @@
   /* The wordmark only: a high-contrast Didone serif. */
   --brand: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
   --hero-bg: #17181b;
+  /* Cards: graphite with a soft top light, the one surface for every box and card. */
+  --card-top: #2c2d31;
+  --card-bottom: #1e1f22;
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.16);
   color-scheme: light;
@@ -538,29 +541,13 @@ html:has(.paywall), body:has(.paywall) { background: #0f0b0c; }
 .lock-chip { display: inline-flex; align-items: center; gap: 4px; }
 @media (prefers-reduced-motion: reduce) { .tier { transition: none; } }
 
-/* Panels: dark cards for settings and short lists (Profil, Dine fejl). A soft red glow along
-   the left edge and a dotted texture that fades out from the top give depth without images.
-   Each row repeats the same build: red icon tile, text, square action on the right. */
+/* Panels: graphite cards for settings and short lists (Profil, Dine fejl). Same surface as
+   every other card (see "Cards" at the end). Each row repeats the same build: red icon tile,
+   text, square action on the right. */
 .panel {
-  position: relative; overflow: hidden; isolation: isolate;
   display: flex; flex-direction: column; gap: 12px;
   padding: 20px 18px 18px; border-radius: 28px; color: #fff;
   --muted: rgba(255, 255, 255, 0.62);
-  background:
-    radial-gradient(80% 70% at 0% 45%, rgba(200, 16, 46, 0.2), transparent 70%),
-    linear-gradient(180deg, #1d1e22, #141518);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1), var(--shadow);
-}
-.panel::before {
-  content: ''; position: absolute; z-index: -1; left: 0; top: 16%; bottom: 16%; width: 2px;
-  background: linear-gradient(180deg, transparent, #ff3b55 50%, transparent);
-  box-shadow: 0 0 14px 1px rgba(255, 59, 85, 0.6);
-}
-.panel::after {
-  content: ''; position: absolute; z-index: -1; inset: 0;
-  background: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.3px) 0 0 / 14px 14px;
-  -webkit-mask-image: linear-gradient(180deg, #000, transparent 55%);
-  mask-image: linear-gradient(180deg, #000, transparent 55%);
 }
 .panel :focus-visible { outline-color: #fff; }
 .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 2px; }
@@ -593,7 +580,7 @@ button.prow:active { background: rgba(255, 255, 255, 0.07); }
   transition: background 0.15s ease, transform 0.1s ease;
 }
 button.prow-action:active:not(:disabled) { transform: scale(0.94); background: rgba(255, 255, 255, 0.12); }
-.prow.is-on .prow-action.is-check { background: #fff; color: var(--ink); box-shadow: none; }
+.prow.is-on .prow-action.is-check { background: #fff; color: var(--card-bottom); box-shadow: none; }
 .prow-steps { display: flex; align-items: center; gap: 6px; flex: none; }
 .prow-value { min-width: 46px; text-align: center; font-family: var(--display); font-size: 22px; font-weight: 700; user-select: none; }
 .prow-value small { font-family: var(--body); font-size: 12px; font-weight: 500; color: var(--muted); }
@@ -625,3 +612,35 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .gauge-scale span { position: absolute; top: 0; transform: translateX(-50%); font-size: 12px; font-weight: 600; opacity: 0.7; white-space: nowrap; }
 .result-chip { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
 @media (prefers-reduced-motion: reduce) { .answer-strip li { animation: none; } }
+
+/* ── Cards ─────────────────────────────────────────────────────────────
+   Every box and card is graphite (was white paper): a soft vertical gradient, a hairline
+   edge and a light top rim, like a lit glass edge. Inside a card the paper tokens are
+   remapped, so all existing rules (ink = selection, line, soft tints) read correctly on dark.
+   The tab bar keeps the white paper tokens. */
+.summary, .box:not(.is-empty), .option, .chip, .stat, .hero, .panel, .grid-nav button {
+  --surface: #232427;
+  --surface-2: rgba(255, 255, 255, 0.08);
+  --ink: #ffffff;
+  --muted-paper: rgba(255, 255, 255, 0.62);
+  --line: rgba(255, 255, 255, 0.1);
+  --accent-soft: rgba(200, 16, 46, 0.2);
+  --good: #2fbf6b;
+  --good-soft: rgba(47, 191, 107, 0.16);
+  --nope: rgba(255, 255, 255, 0.4);
+  --nope-soft: rgba(255, 255, 255, 0.04);
+}
+.summary, .box:not(.is-empty), .option, .chip, .stat, .hero, .hero.is-ink, .hero.is-good, .panel,
+.page > .box-list > .box, .page > ul > .box {
+  background: linear-gradient(180deg, var(--card-top), var(--card-bottom));
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 18px 36px -22px rgba(30, 0, 6, 0.75);
+}
+/* Answer states keep a solid base: a see-through tint would let the red ground through. */
+.option.is-correct { background: linear-gradient(var(--good-soft), var(--good-soft)), var(--card-bottom); }
+.option.is-wrong { background: var(--card-bottom); }
+.option.is-wrong .check, .path-step.is-current .path-dot { color: var(--card-bottom); }
+/* Red text needs a lighter red on graphite. */
+.summary .secondary.danger, .path-kicker { color: #ff7b8b; }
+.day.is-future .day-dot { outline-color: rgba(255, 255, 255, 0.28); }
+.grid-nav button { background: var(--surface); }
