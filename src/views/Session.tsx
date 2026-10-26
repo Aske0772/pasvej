@@ -93,7 +93,7 @@ export function Session({ title, questionIds, helpLang, score, next, onAnswer, o
       </div>
 
       <div className="page flush-bottom">
-        <section className="hero is-ink">
+        <section className="hero is-ink q-card">
           <div className="hero-chips">
             <span className="glass-chip">{topicById(q.topic).name.da}</span>
             {combo >= COMBO_FROM && (
@@ -122,7 +122,7 @@ export function Session({ title, questionIds, helpLang, score, next, onAnswer, o
         </div>
 
         {answered && (
-          <div className="summary explain" aria-live="polite">
+          <div className={`summary explain ${picked === q.answer ? 'is-ok' : 'is-no'}`} aria-live="polite">
             <p className={`verdict ${picked === q.answer ? 'ok' : 'no'}`}>
               {picked === q.answer ? 'Rigtigt' : `Ikke helt – svaret er ${KEYS[q.answer]}`}
             </p>

@@ -151,7 +151,7 @@ export function Exam({ paper, onAnswer, onDone, onExit }: Props) {
       </div>
 
       <div className="page flush-bottom">
-        <section className="hero is-ink">
+        <section className="hero is-ink q-card">
           <div className="hero-chips">
             <span className="glass-chip">
               {index + 1} af {questions.length}

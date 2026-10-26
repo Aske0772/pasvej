@@ -13,6 +13,10 @@ Kortene var tidligere hvidt papir. Inde i et kort er papirets farvetokens byttet
 hvid med 10 %, grøn er lysere `#2FBF6B`), så valg, streger og svarfarver læses rigtigt på mørkt. Svarfelter har altid en
 fast bund, så en gennemsigtig grøn eller grå aldrig lader det røde skinne igennem.
 
+**Spørgsmålsskærme har tre toner**, så delene ikke flyder sammen: spørgsmålet er det mørkeste kort (`#101113`, fladt,
+det skal læses), svarmulighederne er de hævede grafitkort (de kan trykkes på), og forklaringen er det lyseste kort med en
+stribe foroven i dommens farve: grøn ved rigtigt, lys grå ved forkert.
+
 **Paneler** (Profil og "Dine fejl" under Træn) har samme grafitflade. Hver række er bygget ens (lighed): rød ikonflise,
 titel og undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og
 en hvid afkrydsning. Hovedhandlingen på et kort er den røde pille.
