@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Check, Minus, Plus } from './icons'
+import { Arrow, Check, Minus, Plus } from './icons'
 
 export function Stepper({
   label,
@@ -45,6 +45,76 @@ export function Chip({ on, title, sub, onClick }: { on: boolean; title: ReactNod
       {sub && <span className="chip-sub">{sub}</span>}
       <span className="check">{on && <Check size={14} />}</span>
     </button>
+  )
+}
+
+/**
+ * Dark panel (ink layer) for settings and short lists: a title with an optional note, then
+ * rows. One panel per topic keeps related controls in one region (common region).
+ */
+export function Panel({ title, sub, aside, children }: { title?: ReactNode; sub?: ReactNode; aside?: ReactNode; children: ReactNode }) {
+  return (
+    <section className="panel">
+      {title && (
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">{title}</h2>
+            {sub && <p className="panel-sub">{sub}</p>}
+          </div>
+          {aside}
+        </header>
+      )}
+      {children}
+    </section>
+  )
+}
+
+/**
+ * One panel row: icon tile, text and an action on the right, always in that order
+ * (similarity). With onClick the whole row is the button; `on` marks the chosen option.
+ */
+export function Row({
+  icon,
+  title,
+  sub,
+  trailing,
+  on,
+  dim,
+  onClick,
+}: {
+  icon: ReactNode
+  title: ReactNode
+  sub?: ReactNode
+  /** Defaults to an arrow for rows that go somewhere, or a check box when `on` is set. */
+  trailing?: ReactNode
+  on?: boolean
+  dim?: boolean
+  onClick?: () => void
+}) {
+  const end =
+    trailing ??
+    (on === undefined ? (
+      onClick && <span className="prow-action"><Arrow size={18} /></span>
+    ) : (
+      <span className="prow-action is-check">{on && <Check size={16} />}</span>
+    ))
+  const body = (
+    <>
+      <span className="prow-icon">{icon}</span>
+      <span className="prow-text">
+        <span className="prow-title">{title}</span>
+        {sub && <span className="prow-sub">{sub}</span>}
+      </span>
+      {end}
+    </>
+  )
+  const cls = `prow ${on ? 'is-on' : ''} ${dim ? 'is-dim' : ''}`
+  return onClick ? (
+    <button type="button" className={cls} aria-pressed={on} onClick={onClick}>
+      {body}
+    </button>
+  ) : (
+    <div className={cls}>{body}</div>
   )
 }
 

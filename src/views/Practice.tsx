@@ -4,11 +4,11 @@ import { TOPICS } from '../data/topics'
 import type { CardState } from '../engine/srs'
 import { topicMastery } from '../engine/readiness'
 import { shuffle } from '../engine/exam'
-import { Check, Lock } from './icons'
+import { Check, Lock, Redo } from './icons'
 
 /** Topic mastery at which a chapter counts as mastered. */
 const MASTERED = 0.8
-import { formatDate } from './ui'
+import { formatDate, Panel, Row } from './ui'
 
 interface Props {
   cards: Record<string, CardState>
@@ -36,16 +36,13 @@ export function Practice({ cards, questions, examDate, locked, onLocked, onStart
         <span className="muted">{questions.length} spørgsmål</span>
       </header>
 
-      <section className="summary">
-        <div className="page-head">
-          <div>
-            <h2 className="section-title">Dine fejl</h2>
-            <p className="small muted">Spørgsmål, du har svaret forkert på for nylig</p>
-          </div>
-          <span className="display-num" style={{ fontSize: 34 }}>
-            {mistakes.length}
-          </span>
-        </div>
+      <Panel>
+        <Row
+          icon={<Redo size={20} />}
+          title="Dine fejl"
+          sub="Spørgsmål, du har svaret forkert på for nylig"
+          trailing={<span className="panel-num">{mistakes.length}</span>}
+        />
         {locked ? (
           <button type="button" className="primary wide" onClick={onLocked}>
             <Lock size={16} /> Træn dine fejl med Basis
@@ -55,7 +52,7 @@ export function Practice({ cards, questions, examDate, locked, onLocked, onStart
             {mistakes.length ? 'Træn dine fejl' : 'Ingen fejl lige nu'}
           </button>
         )}
-      </section>
+      </Panel>
 
       {GROUPS.map((g) => (
         <section key={g.title} className="box-list">

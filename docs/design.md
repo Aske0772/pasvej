@@ -10,6 +10,11 @@ boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt p�
 | **Papir** | Hvide kort og bokse til indhold (plan, svar, forklaringer, valg) | Sort og grå |
 | **Blæk** | Ét mørkt kort pr. skærm til det vigtigste (chancen for at bestå, spørgsmålet) | Hvid |
 
+**Paneler** (Profil og "Dine fejl" under Træn) er mørke kort i samme blæk-familie, med en svag rød glød langs
+venstre kant og en prikket struktur, der fader ud fra toppen. Hver række er bygget ens (lighed): rød ikonflise, titel og
+undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og en hvid
+afkrydsning. Hovedhandlingen på et panel er den røde pille.
+
 **Ingen header.** Som i en app starter hver skærm med sin egen store titel, og dagene til prøven står i Hjems titellinje.
 Toppen holder afstand til telefonens statuslinje (`env(safe-area-inset-top)`). **Fanebjælken** i bunden er det eneste faste
 element: hvidt papir, der rammer den røde grund ind (5,3:1 til 8,6:1 mod det røde). Den aktive fane er rød, inaktive er grå

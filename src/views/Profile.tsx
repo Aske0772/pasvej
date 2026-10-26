@@ -1,8 +1,7 @@
 import { PRICE_PERIOD, planById, type Tier } from '../data/plans'
-import type { Profile as ProfileT } from '../store'
-import { Check } from './icons'
-import { LanguagePicker, SittingPicker } from './Onboarding'
-import { Stepper } from './ui'
+import { SITTINGS, type Profile as ProfileT } from '../store'
+import { Calendar, Clock, Flag, Globe, Lock, Minus, Plus, Star, Text } from './icons'
+import { formatDate, Panel, Row } from './ui'
 
 interface Props {
   profile: ProfileT
@@ -12,6 +11,8 @@ interface Props {
   onReset: () => void
 }
 
+const today = () => new Date().toISOString().slice(0, 10)
+
 const LADDER = [
   { id: 'pd2', name: 'Prøve i Dansk 2', note: 'Sprogkrav for permanent ophold', active: false },
   { id: 'medborgerskab', name: 'Medborgerskabsprøven', note: 'Krav for permanent ophold', active: false },
@@ -20,66 +21,96 @@ const LADDER = [
 
 export function Profile({ profile, onChange, tier, onChangePlan, onReset }: Props) {
   const plan = tier ? planById(tier) : null
+  const setMinutes = (v: number) => onChange({ ...profile, dailyMinutes: v as ProfileT['dailyMinutes'] })
   return (
     <div className="page">
       <header className="page-head">
         <h1>Profil</h1>
       </header>
 
-      <section className="summary">
-        <div className="page-head">
-          <h2 className="section-title">Abonnement</h2>
-          <span className="small muted">
-            {plan ? (plan.price ? `${plan.price} kr./${PRICE_PERIOD}` : 'Gratis') : 'Ikke valgt'}
-          </span>
-        </div>
-        <p className="box-title">{plan?.name ?? '–'}</p>
-        <p className="small muted">{plan?.tagline}</p>
-        <button type="button" className={tier === 'plus' ? 'secondary wide' : 'primary wide'} onClick={onChangePlan}>
+      <Panel
+        title="Abonnement"
+        aside={<span className="panel-aside">{plan ? (plan.price ? `${plan.price} kr./${PRICE_PERIOD}` : 'Gratis') : 'Ikke valgt'}</span>}
+      >
+        <Row icon={<Star size={20} />} title={plan?.name ?? '–'} sub={plan?.tagline} />
+        <button type="button" className="primary wide" onClick={onChangePlan}>
           {tier === 'plus' ? 'Se abonnementer' : 'Opgrader'}
         </button>
-      </section>
+      </Panel>
 
-      <section className="summary">
-        <h2 className="section-title">Prøvedato</h2>
-        <SittingPicker value={profile.examDate} onChange={(examDate) => onChange({ ...profile, examDate })} />
-      </section>
+      <Panel title="Prøvedato">
+        <div className="panel-list">
+          {SITTINGS.filter((s) => s.date >= today()).map((s) => (
+            <Row
+              key={s.date}
+              icon={<Calendar size={20} />}
+              title={formatDate(s.date, { day: 'numeric', month: 'long', year: 'numeric' })}
+              sub={s.deadline >= today() ? `Tilmelding senest ${formatDate(s.deadline, { day: 'numeric', month: 'short' })}` : 'Tilmelding lukket'}
+              on={profile.examDate === s.date}
+              onClick={() => onChange({ ...profile, examDate: s.date })}
+            />
+          ))}
+        </div>
+      </Panel>
 
-      <section className="summary">
-        <Stepper
-          label="Tid om dagen"
-          value={profile.dailyMinutes}
-          min={5}
-          max={15}
-          step={5}
-          unit="min"
-          onChange={(v) => onChange({ ...profile, dailyMinutes: v as ProfileT['dailyMinutes'] })}
+      <Panel>
+        <Row
+          icon={<Clock size={20} />}
+          title="Tid om dagen"
+          trailing={
+            <span className="prow-steps">
+              <button
+                type="button"
+                className="prow-action"
+                aria-label="Mindre: Tid om dagen"
+                disabled={profile.dailyMinutes <= 5}
+                onClick={() => setMinutes(profile.dailyMinutes - 5)}
+              >
+                <Minus size={18} />
+              </button>
+              <span className="prow-value" aria-live="polite">
+                {profile.dailyMinutes}
+                <small> min</small>
+              </span>
+              <button
+                type="button"
+                className="prow-action"
+                aria-label="Mere: Tid om dagen"
+                disabled={profile.dailyMinutes >= 15}
+                onClick={() => setMinutes(profile.dailyMinutes + 5)}
+              >
+                <Plus size={18} />
+              </button>
+            </span>
+          }
         />
-      </section>
+      </Panel>
 
-      <section className="summary">
-        <h2 className="section-title">Forklaringer</h2>
-        <LanguagePicker value={profile.helpLang} onChange={(helpLang) => onChange({ ...profile, helpLang })} />
-      </section>
+      <Panel title="Forklaringer">
+        <div className="panel-list">
+          <Row icon={<Text size={20} />} title="Kun dansk" on={profile.helpLang === null} onClick={() => onChange({ ...profile, helpLang: null })} />
+          <Row icon={<Globe size={20} />} title="Dansk + English" on={profile.helpLang === 'en'} onClick={() => onChange({ ...profile, helpLang: 'en' })} />
+        </div>
+      </Panel>
 
-      <h2 className="group-title">Din vej</h2>
-      <p className="small muted" style={{ marginTop: -8 }}>
-        Én profil på tværs af prøverne. Dine data følger med, når du går videre.
-      </p>
-      <ul className="box-list">
-        {LADDER.map((s) => (
-          <li key={s.id} className={`box ${s.active ? '' : 'is-empty'}`}>
-            <span className="check" style={s.active ? { background: 'var(--ink)', color: '#fff', boxShadow: 'none' } : undefined}>
-              {s.active && <Check size={14} />}
-            </span>
-            <span className="box-text">
-              <span className="box-title">{s.name}</span>
-              <span className="box-sub">{s.note}</span>
-            </span>
-            <span className="small muted">{s.active ? 'Aktiv' : tier === 'plus' ? 'I Plus · kommer snart' : 'Kommer snart'}</span>
-          </li>
-        ))}
-      </ul>
+      <Panel title="Din vej" sub="Én profil på tværs af prøverne. Dine data følger med, når du går videre.">
+        <div className="panel-list">
+          {LADDER.map((s) => (
+            <Row
+              key={s.id}
+              dim={!s.active}
+              icon={s.active ? <Flag size={20} /> : <Lock size={18} />}
+              title={s.name}
+              sub={s.note}
+              trailing={
+                <span className={`prow-tag ${s.active ? 'is-on' : ''}`}>
+                  {s.active ? 'Aktiv' : tier === 'plus' ? 'I Plus · snart' : 'Kommer snart'}
+                </span>
+              }
+            />
+          ))}
+        </div>
+      </Panel>
 
       <button
         type="button"
