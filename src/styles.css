@@ -114,11 +114,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 /* App chrome (header and tab bar) is white paper framing the red ground, so it never blends
    with it (figure and ground): red wordmark and ink/red controls on white. */
 .app > .topbar {
-  padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: 12px; margin-bottom: 8px;
+  padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: 12px;
   background: var(--surface); color: var(--ink); --muted: var(--muted-paper);
   box-shadow: 0 1px 0 var(--line), 0 10px 24px -18px rgba(40, 0, 8, 0.6);
 }
 .app > .topbar .brand { color: var(--accent); }
+/* Space below the header lives inside the scroll area, so no strip of red shows between them. */
+.app > .topbar + .main > .page { padding-top: 16px; }
 .app > .topbar .pill { background: var(--accent-soft); color: var(--accent); box-shadow: none; }
 .page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .page-head h1, .onboarding h1 { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1.05; letter-spacing: -0.03em; }
