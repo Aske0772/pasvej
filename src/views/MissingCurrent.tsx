@@ -18,7 +18,7 @@ export function MissingCurrent({ examDate, missing, count, passTotal }: { examDa
         <Chevron size={16} />
       </button>
       {open && (
-        <ul id={id} className="disclosure-body">
+        <ul id={id} className="disclosure-body divided">
           <li>Spørgsmål 36–40 til prøven handler om aktuelle begivenheder fra det sidste halve år før prøven.</li>
           <li>
             Din prøve er <b>{formatDate(examDate)}</b>, så de handler om tiden fra cirka <b>{from}</b> og frem. Meget af det er
