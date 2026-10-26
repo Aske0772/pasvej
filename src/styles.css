@@ -1,0 +1,458 @@
+/* Pasvej is built like the flag: a red ground with white on it. Same design family as the
+   idebanken meal app (Mæt): Bricolage Grotesque for display, a Bodoni wordmark, boxes and
+   pill buttons.
+
+   Three layers (figure and ground, see docs/design.md):
+   1. Ground  – Dannebrog-red gradient. Text on it is white.
+   2. Paper   – white boxes and cards for content. Text on it is ink.
+   3. Ink     – one dark card per screen for the main thing (pass chance, the question).
+
+   Colour roles:
+   - red   = the brand and the ground. Never "wrong".
+   - white = the main action on the ground (CTA), and "correct" where green can't be read on red.
+   - green = correct / done / mastered, on paper.
+   - ink   = selection, neutral progress, wrong answers (ink and grey).
+
+   Main action: inverted to its surface. On the red ground it is a white pill with red text;
+   on paper it is a red pill with white text. */
+:root {
+  --ground-top: #d4152f;
+  --ground-mid: #bd0f2b;
+  --ground-bottom: #9a0c24;
+  --on-ground: #ffffff;
+  --on-ground-muted: rgba(255, 255, 255, 0.92);
+  --on-ground-line: rgba(255, 255, 255, 0.24);
+  --glass: rgba(255, 255, 255, 0.16);
+
+  --surface: #ffffff;
+  --surface-2: #ecebe8;
+  --ink: #161616;
+  --muted-paper: #6b6b66;
+  --muted: var(--muted-paper);
+  --line: #e5e5e1;
+  /* Dannebrog red (Pantone 186 C). White text on it: 5.9:1. */
+  --accent: #c8102e;
+  --accent-press: #a50d26;
+  --accent-soft: #fbe8eb;
+  --good: #1f9d55;
+  --good-soft: #e6f4ec;
+  --nope: #8a8a84;
+  --nope-soft: #f1f1ee;
+  --shadow: 0 24px 48px -24px rgba(40, 0, 8, 0.6);
+  --lift: 0 10px 24px -12px rgba(60, 0, 10, 0.55);
+  --display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* The wordmark only: a high-contrast Didone serif. */
+  --brand: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+  --hero-bg: #17181b;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+/* Overscroll and safe areas show the bottom red, not white. */
+html { background: var(--ground-bottom); }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  /* Static gradients only: the page itself never scrolls (content scrolls inside .main), so
+     this paints once. No blur, no animation, no fixed-attachment repaint. */
+  background:
+    radial-gradient(120% 55% at 0% 0%, rgba(255, 255, 255, 0.16), transparent 65%),
+    radial-gradient(100% 50% at 100% 100%, rgba(60, 0, 12, 0.28), transparent 70%),
+    linear-gradient(172deg, var(--ground-top) 0%, var(--ground-mid) 48%, var(--ground-bottom) 100%);
+  color: var(--on-ground);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+/* Faint grain, one static layer. */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.14;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.02 0 0 0 0 0.05 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; text-align: inherit; }
+button:disabled { cursor: default; opacity: 0.4; }
+button:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+h1, h2, h3, p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.center { text-align: center; }
+
+/* On the ground, secondary text is white; paper resets it to grey. */
+.app, .onboarding { --muted: var(--on-ground-muted); }
+.summary, .box:not(.is-empty), .option, .chip, .stat, .hero.is-good {
+  color: var(--ink);
+  --muted: var(--muted-paper);
+}
+.summary :focus-visible, .hero.is-good :focus-visible { outline-color: var(--ink); }
+
+/* Layout: the page never scrolls; content scrolls inside .main. */
+.app, .onboarding {
+  max-width: 480px;
+  margin: 0 auto;
+  height: 100dvh;
+}
+.app { display: flex; flex-direction: column; }
+.main { flex: 1; min-height: 0; overflow-y: auto; }
+.page { padding: 8px 16px 32px; display: flex; flex-direction: column; gap: 16px; }
+.page.flush-bottom { padding-bottom: 0; }
+
+.brand {
+  font-family: var(--brand); font-weight: 700; font-size: 30px; line-height: 1; letter-spacing: -0.01em;
+  font-variation-settings: 'opsz' 11;
+}
+.brand--big { font-size: 64px; font-variation-settings: 'opsz' 48; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
+.page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.page-head h1, .onboarding h1 { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1.05; letter-spacing: -0.03em; }
+.section-title { font-size: 15px; font-weight: 650; }
+.group-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 4px 2px 0; }
+.display-num { font-family: var(--display); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+
+/* Buttons. The main action inverts against what it sits on. */
+.primary, .secondary {
+  min-height: 54px; padding: 0 22px; border-radius: 999px; font-weight: 700; font-size: 16px; text-align: center;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.primary:active:not(:disabled), .secondary:active:not(:disabled) { transform: scale(0.98); }
+/* On the red ground: white pill, red text. */
+.primary { background: #fff; color: var(--accent); box-shadow: var(--lift); }
+.primary:active:not(:disabled) { background: var(--accent-soft); }
+.secondary { background: var(--glass); color: #fff; box-shadow: inset 0 0 0 1px var(--on-ground-line); }
+/* On paper: red pill, white text. */
+.summary .primary, .hero.is-good .primary { background: var(--accent); color: #fff; box-shadow: none; }
+.summary .primary:active:not(:disabled), .hero.is-good .primary:active:not(:disabled) { background: var(--accent-press); }
+.summary .secondary, .hero.is-good .secondary { background: var(--surface-2); color: var(--ink); box-shadow: none; }
+.summary .secondary.danger { color: var(--accent); }
+.wide { width: 100%; }
+.round {
+  width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--glass); color: #fff; box-shadow: inset 0 0 0 1px var(--on-ground-line);
+}
+.summary .round { background: var(--surface); color: var(--ink); box-shadow: 0 1px 0 var(--line), 0 0 0 1px var(--line) inset; }
+.pill {
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; flex: none;
+  border-radius: 999px; background: var(--glass); color: #fff; box-shadow: inset 0 0 0 1px var(--on-ground-line);
+  font-weight: 650; font-size: 14px; font-variant-numeric: tabular-nums;
+}
+/* Low time: the pill turns into paper, the one thing that pops on the red. */
+.pill.is-low { background: #fff; color: var(--accent); box-shadow: var(--lift); }
+
+/* Boxes: one per item, all built the same way. */
+.box {
+  position: relative; display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 14px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line);
+}
+.box-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.box-title { font-weight: 650; }
+.box-sub { font-size: 13px; color: var(--muted); }
+.page-head > .box-sub { white-space: nowrap; }
+.box-list { display: flex; flex-direction: column; gap: 8px; }
+.check {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  box-shadow: 0 0 0 1.5px var(--line) inset; font-size: 13px; font-weight: 700;
+}
+.box.is-done { opacity: 0.7; }
+.summary {
+  padding: 20px; border-radius: 22px; background: var(--surface); border: 0;
+  display: flex; flex-direction: column; gap: 12px; box-shadow: 0 14px 32px -22px rgba(40, 0, 8, 0.55);
+}
+/* Boxes inside a paper card don't need their own lift. */
+.page > .box-list > .box, .page > ul > .box { box-shadow: 0 10px 24px -20px rgba(40, 0, 8, 0.6); border-color: transparent; }
+
+/* Choice chips (onboarding/profile): one box per choice, ink ring when chosen. */
+.chip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.chip {
+  position: relative; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+  min-height: 66px; padding: 12px 44px 12px 14px; border-radius: 18px; text-align: left;
+  background: var(--surface); border: 1px solid var(--line);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.chip.is-on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
+.chip-name { font-weight: 650; font-size: 15px; }
+.chip-sub { font-size: 12px; color: var(--muted); }
+.chip .check { position: absolute; top: 50%; right: 14px; width: 22px; height: 22px; margin-top: -11px; }
+.chip.is-on .check { background: var(--ink); color: var(--surface); box-shadow: none; }
+
+/* Stepper */
+.stepper { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.stepper-label { font-weight: 600; }
+.stepper-controls { display: flex; align-items: center; gap: 14px; }
+.stepper-value { user-select: none; min-width: 28px; text-align: center; font-family: var(--display); font-size: 24px; font-weight: 700; }
+.stepper-value small { font-family: var(--body); font-size: 13px; font-weight: 500; color: var(--muted); }
+
+/* Progress (on paper) */
+.segments { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
+.segments span { height: 8px; border-radius: 4px; background: var(--surface-2); }
+.segments span.is-on, .segments span.is-ok { background: var(--good); }
+.segments span.is-no { background: var(--nope); }
+.segments span.is-now { background: var(--ink); }
+.segments.thin { gap: 4px; }
+.segments.thin span { height: 5px; }
+.meter { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.meter span { display: block; height: 100%; border-radius: 3px; background: var(--ink); transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.meter.is-good span { background: var(--good); }
+/* Progress on the red ground: white is "done/correct", dark is "wrong", a ring is "now". */
+.q-top .segments span { background: rgba(255, 255, 255, 0.24); }
+.q-top .segments span.is-ok, .q-top .segments span.is-on { background: #fff; }
+.q-top .segments span.is-no { background: rgba(40, 0, 8, 0.5); }
+.q-top .segments span.is-now { background: transparent; box-shadow: inset 0 0 0 1.5px #fff; }
+.q-top .meter { background: rgba(255, 255, 255, 0.24); }
+.q-top .meter span { background: #fff; }
+
+/* Hero card: the dark card that carries the main thing on each screen. */
+.hero {
+  position: relative; overflow: hidden; border-radius: 28px; padding: 20px 18px; color: #fff;
+  --muted: rgba(255, 255, 255, 0.75);
+  background:
+    radial-gradient(110% 80% at 100% 0%, rgba(200, 16, 46, 0.42), transparent 62%),
+    var(--hero-bg);
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px;
+}
+.hero.is-ink { background: radial-gradient(120% 80% at 100% 0%, rgba(255, 255, 255, 0.07), transparent 60%), var(--hero-bg); }
+.hero-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; white-space: nowrap; }
+.hero-row .glass-chip { flex: none; }
+.hero-num { font-family: var(--display); font-size: 72px; font-weight: 800; letter-spacing: -0.05em; line-height: 0.9; }
+.hero-num small { font-family: var(--body); font-size: 22px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin-left: 4px; }
+.hero-title { font-family: var(--display); font-size: 26px; font-weight: 750; line-height: 1.12; letter-spacing: -0.02em; }
+.hero-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.hero-note { font-size: 13px; opacity: 0.8; }
+.req { display: flex; flex-direction: column; gap: 6px; }
+.req-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.req-head b { font-variant-numeric: tabular-nums; }
+.hero .meter { background: rgba(255, 255, 255, 0.14); }
+.hero .meter span { background: #fff; }
+.hero .meter.is-weak span { background: rgba(255, 255, 255, 0.55); }
+.hero .meter.is-no span { background: rgba(255, 255, 255, 0.45); }
+.glass-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px;
+  font-size: 13px; font-weight: 550; color: #fff; background: var(--glass-bg); border: 1px solid var(--glass-border);
+}
+.glass-chip .dots { display: inline-flex; gap: 3px; }
+.glass-chip .dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); }
+.glass-chip .dots i.on { background: #fff; }
+
+/* Success card: paper with green, so it stands out against the red ground (not green on red). */
+.hero.is-good { background: var(--surface); box-shadow: var(--shadow); }
+.hero.is-good .hero-num { color: var(--good); }
+.hero.is-good .hero-label { color: var(--good); opacity: 1; }
+.hero.is-good .meter { background: var(--surface-2); }
+.hero.is-good .meter span { background: var(--good); }
+.hero.is-good .glass-chip, .hero.is-good .delta { background: var(--good-soft); color: var(--good); border-color: transparent; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; }
+.stat b { font-family: var(--display); font-size: 24px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.stat span { font-size: 12px; color: var(--muted); }
+
+/* Question screens */
+.q-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px 10px; }
+.q-top .segments { flex: 1; }
+.q-count { font-size: 14px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 62px;
+  padding: 12px 48px 12px 12px; border-radius: 18px; text-align: left; font-weight: 550;
+  background: var(--surface); border: 1px solid transparent; box-shadow: 0 10px 24px -20px rgba(40, 0, 8, 0.6);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.option .key {
+  flex: none; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center;
+  background: var(--surface-2); font-size: 13px; font-weight: 700;
+}
+.option .check { position: absolute; top: 50%; right: 14px; margin-top: -13px; color: transparent; }
+.option:disabled { opacity: 1; cursor: default; }
+.option.is-picked { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
+.option.is-picked .check { background: var(--ink); color: var(--surface); box-shadow: none; }
+.option.is-correct { border-color: var(--good); box-shadow: 0 0 0 1px var(--good) inset; background: var(--good-soft); }
+.option.is-correct .check { background: var(--good); color: #fff; box-shadow: none; }
+.option.is-wrong { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; background: var(--nope-soft); }
+.option.is-wrong > span:nth-child(2) { text-decoration: line-through; text-decoration-color: var(--nope); color: var(--muted); }
+.option.is-wrong .check { background: var(--ink); color: #fff; box-shadow: none; }
+/* Dim the content, not the box: transparency would let the red ground through and turn it pink. */
+.option.is-dim { color: var(--muted); }
+.option.is-dim .key { color: var(--muted); }
+
+.explain { display: flex; flex-direction: column; gap: 10px; }
+.verdict { font-family: var(--display); font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.verdict.ok { color: var(--good); }
+.verdict.no { color: var(--ink); }
+.translation { border-top: 1px dashed var(--line); padding-top: 10px; color: var(--muted); font-size: 15px; }
+.tag { display: block; margin-bottom: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.source { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.source a { color: inherit; text-underline-offset: 2px; }
+
+/* Question screens fill the scroll area so the action bar sits at the bottom. */
+.q-screen { min-height: 100%; display: flex; flex-direction: column; }
+.q-screen > .page { flex: 1; }
+/* Sticky action bar: fades into the bottom red of the ground. */
+.actions {
+  position: sticky; bottom: 0; z-index: 2; display: flex; gap: 10px;
+  padding: 18px 16px calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(rgba(154, 12, 36, 0), var(--ground-bottom) 45%);
+}
+.actions .primary { flex: 1 1 0; }
+
+.grid-nav { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
+.grid-nav button {
+  aspect-ratio: 1; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); color: var(--ink);
+  font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.grid-nav button.is-answered { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.grid-nav button.is-current { box-shadow: 0 0 0 2px var(--accent); }
+
+.empty { padding: 40px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; color: var(--muted); }
+.answer-line { font-size: 14px; font-weight: 650; color: var(--good); }
+
+/* Onboarding */
+.onboarding { padding: 32px 16px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
+.onboarding-head { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+.onboarding h1 { font-size: 30px; line-height: 1.1; max-width: 16ch; }
+.onboarding section { display: flex; flex-direction: column; gap: 12px; }
+
+/* Tab bar: solid bottom red, no blur (cheap to composite). */
+.tabbar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--ground-bottom); border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 0 8px; color: rgba(255, 255, 255, 0.68); }
+.tab.is-on { color: #fff; }
+.tab.is-on::before { content: ''; position: absolute; top: -1px; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: #fff; }
+.tab-label { font-size: 12px; font-weight: 650; }
+
+/* ── Journey and feedback ─────────────────────────────────────────────── */
+
+/* Today's plan as one path (continuity): every step hangs on one unbroken line.
+   Done = green dot, current = ink dot and a tinted region holding the only button,
+   upcoming = hollow dot and plain text (looks like "later", not like a second button). */
+.path { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.path-step { position: relative; display: grid; grid-template-columns: 28px 1fr; column-gap: 12px; align-items: start; }
+/* Line from this dot down to the next one; it runs under the next dot and stops at the last step.
+   Green behind finished steps, so the path fills up as the day goes (closure). */
+.path-step:not(:last-child)::before {
+  content: ''; position: absolute; left: 13px; top: 22px; bottom: -20px; width: 2px; border-radius: 1px; background: var(--line);
+}
+.path-step.is-current:not(:last-child)::before { top: 28px; }
+.path-step.is-done:not(:last-child)::before { background: var(--good); }
+.path-dot {
+  position: relative; z-index: 1; width: 28px; height: 28px; margin-top: 8px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; font-weight: 700;
+  background: var(--surface); box-shadow: inset 0 0 0 2px var(--line); color: var(--muted);
+}
+.path-body { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; text-align: left; border-radius: 16px; }
+button.path-body:hover .box-title { text-decoration: underline; text-underline-offset: 3px; }
+.path-step.is-done .path-dot { background: var(--good); color: #fff; box-shadow: none; }
+.path-step.is-done .box-title { color: var(--muted); }
+.path-step.is-upcoming .box-title { font-weight: 600; }
+.path-step.is-current .path-dot { margin-top: 14px; background: var(--ink); color: #fff; box-shadow: 0 0 0 4px var(--surface); }
+.path-step.is-current .path-body { padding: 12px 14px 14px; background: var(--accent-soft); gap: 3px; }
+.path-step.is-current .box-title { font-size: 18px; font-weight: 750; }
+.path-step.is-current .primary { margin-top: 10px; min-height: 48px; }
+.path-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+/* This week as a calendar, Monday to Sunday: practised = green with a tick, today = ink ring,
+   missed = plain, future = dashed (not yet). Circles, so it doesn't read as a progress bar. */
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.day-dot {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--surface-2); color: #fff;
+}
+.day-label { font-size: 11px; font-weight: 650; color: var(--muted); }
+.day.is-on .day-dot { background: var(--good); }
+.day.is-today .day-dot { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+.day.is-today .day-label { color: var(--ink); font-weight: 800; }
+.day.is-future .day-dot { background: transparent; outline: 1.5px dashed #c9c8c3; outline-offset: -1.5px; }
+
+/* Things that change together, appear together (common fate). */
+.combo { animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.option.is-correct .check { animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.option.is-wrong { animation: nudge 0.3s ease; }
+@keyframes pop { 0% { transform: scale(0.4); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes nudge { 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@keyframes rise { from { transform: translateY(12px); opacity: 0; } }
+.explain { animation: rise 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Expected score against the pass mark: the line is the goal (closure). */
+.goal-meter { position: relative; overflow: visible; }
+.goal-meter .mark { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; border-radius: 2px; background: var(--ink); }
+.hero .goal-meter .mark { background: #fff; }
+.hero.is-good .goal-meter .mark { background: var(--ink); }
+.goal-meter > span:not(.mark):not(.was) { position: relative; }
+
+/* Before → after on the expected score after a session. */
+.delta { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 14px; background: rgba(255, 255, 255, 0.16); }
+.meter-ghost { position: relative; }
+.hero .meter-ghost .was, .meter-ghost .was { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 3px; background: rgba(255, 255, 255, 0.35); }
+.hero.is-good .meter-ghost .was { background: rgba(31, 157, 85, 0.3); }
+
+/* Rubber stamp on a passed mock exam, like the swipe stamps in Mæt. */
+.stamp {
+  position: absolute; top: 18px; right: 16px; padding: 4px 12px; border: 3px solid currentColor; border-radius: 10px;
+  font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: 0.04em; color: #fff;
+  transform: rotate(-10deg); animation: stamp 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
+}
+.hero.is-good .stamp { color: var(--good); }
+@keyframes stamp { 0% { transform: rotate(-10deg) scale(2.2); opacity: 0; } 100% { transform: rotate(-10deg) scale(1); opacity: 1; } }
+
+/* Mastered chapter. */
+.badge-done { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--good); }
+
+/* Nothing here yet: a dashed outline on the red, not a white box, so it doesn't read as tappable (similarity). */
+.box.is-empty { border: 1.5px dashed var(--on-ground-line); background: transparent; color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .meter span, .chip, .option, .primary, .secondary { transition: none; }
+  .combo, .option.is-correct .check, .option.is-wrong, .explain, .stamp { animation: none; }
+}
+
+/* Theme tiles: rounded, near-square photo cards in a two-up grid (like the dish cards in Mæt).
+   The photo is the card; a shade from the bottom keeps the white title, explanation, bar and
+   number readable. Chapter and question count sit as glass chips on the photo's calm top. */
+.tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tile {
+  position: relative; overflow: hidden; aspect-ratio: 4 / 5; border-radius: 22px;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 12px;
+  background: var(--hero-bg); color: #fff; text-align: left; --muted: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 30px -18px rgba(30, 0, 6, 0.75);
+}
+.photo-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 50%;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.photo-shade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(12, 10, 12, 0.35) 0%, rgba(12, 10, 12, 0.05) 28%, rgba(12, 10, 12, 0.55) 52%, rgba(12, 10, 12, 0.9) 100%);
+}
+.tile-chips, .tile-body { position: relative; }
+.tile-chips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: space-between; }
+.tile-chips .glass-chip { padding: 3px 8px; font-size: 11px; font-weight: 650; background: rgba(12, 10, 12, 0.45); }
+.tile-body { display: flex; flex-direction: column; gap: 4px; }
+.tile-title { font-family: var(--display); font-size: 17px; font-weight: 750; letter-spacing: -0.01em; line-height: 1.12; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4); }
+.tile-blurb { font-size: 12.5px; line-height: 1.35; color: var(--muted); }
+.tile .topic-progress { margin-top: 6px; gap: 8px; }
+.tile .meter { background: rgba(255, 255, 255, 0.28); }
+.tile .meter span { background: #fff; }
+.tile .box-sub { color: #fff; font-size: 12px; font-weight: 700; }
+.tile .badge-done { color: #fff; background: var(--good); padding: 2px 7px 2px 5px; border-radius: 999px; font-size: 11px; }
+.tile:hover .photo-bg { transform: scale(1.05); }
+.tile:active { transform: scale(0.98); }
+/* Not ready yet: same tile, greyed photo and a heavier shade, nothing to tap. */
+.tile.is-empty .photo-bg { filter: grayscale(0.75); }
+.tile.is-empty .photo-shade { background: linear-gradient(180deg, rgba(12, 10, 12, 0.5), rgba(12, 10, 12, 0.9)); }
+@media (prefers-reduced-motion: reduce) { .photo-bg { transition: none; } .tile:active { transform: none; } }
+.topic-progress { display: flex; align-items: center; gap: 10px; }
+.topic-progress .meter { flex: 1; }
+.topic-progress .box-sub { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tile-count { margin-left: auto; }

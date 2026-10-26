@@ -1,0 +1,177 @@
+import type { Readiness } from '../engine/readiness'
+import type { PlanStep } from '../engine/plan'
+import { topicById } from '../data/topics'
+import { Check } from './icons'
+import { formatDate, STEP_TITLE } from './ui'
+
+interface Props {
+  readiness: Readiness
+  plan: PlanStep[]
+  doneSteps: Set<number>
+  examDate: string
+  streak: number
+  /** Day numbers with at least one finished session. */
+  practicedDays: Set<number>
+  today: number
+  onStartStep: (step: PlanStep, index: number) => void
+  onPractice: () => void
+}
+
+const pct = (x: number) => Math.round(x * 100)
+const WEEKDAY = ['S', 'M', 'T', 'O', 'T', 'F', 'L']
+
+export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDays, today, onStartStep, onPractice }: Props) {
+  const weak = readiness.pValues < readiness.pTotal ? 'values' : 'total'
+  const done = plan.filter((_, i) => doneSteps.has(i)).length
+  const nextIndex = plan.findIndex((_, i) => !doneSteps.has(i))
+  const allDone = plan.length > 0 && nextIndex === -1
+
+  return (
+    <div className="page">
+      <header className="page-head">
+        <h1>I dag</h1>
+        <span className="muted">Prøve {formatDate(examDate, { day: 'numeric', month: 'short' })}</span>
+      </header>
+
+      {/* The goal: one figure on the page. */}
+      <section className="hero" aria-labelledby="readiness-h">
+        <div className="hero-row">
+          <div>
+            <p id="readiness-h" className="hero-label">Chance for at bestå</p>
+            <p className="hero-num">
+              {pct(readiness.pass)}
+              <small>%</small>
+            </p>
+          </div>
+          <Confidence level={readiness.confidence} answers={readiness.answers} />
+        </div>
+        <GoalBar label="Rigtige i alt" value={readiness.expectedTotal} goal={36} max={45} weak={weak === 'total'} />
+        <GoalBar label="Værdispørgsmål" value={readiness.expectedValues} goal={4} max={5} weak={weak === 'values'} />
+        <p className="hero-note">
+          {readiness.confidence === 'low' && `Tallet bygger kun på ${readiness.answers} svar og stiger, når du øver. `}
+          Lige nu holder {weak === 'values' ? 'værdispørgsmålene' : 'antallet af rigtige'} dig mest tilbage.
+        </p>
+      </section>
+
+      {allDone ? (
+        <section className="hero is-good">
+          <p className="hero-label">Dagens plan</p>
+          <p className="hero-title">Klaret for i dag.</p>
+          <p className="hero-note">Planen for i morgen er klar, når du kommer tilbage.</p>
+          <button type="button" className="secondary" onClick={onPractice}>
+            Øv mere
+          </button>
+        </section>
+      ) : (
+        <section className="summary" aria-labelledby="plan-h">
+          <div className="page-head">
+            <h2 id="plan-h" className="section-title">Dagens plan</h2>
+            <span className="small muted">
+              {done} af {plan.length} · ca. {plan.reduce((s, p) => s + p.minutes, 0)} min
+            </span>
+          </div>
+          {/* One path (continuity): the steps hang on a single line. The action sits inside the
+              current step (proximity, common region), so there is only one thing to press. */}
+          <ol className="path">
+            {plan.map((step, i) => {
+              const state = doneSteps.has(i) ? 'is-done' : i === nextIndex ? 'is-current' : 'is-upcoming'
+              const meta = `${step.topic ? `${topicById(step.topic).name.da} · ` : ''}${step.questionIds.length} spørgsmål · ${step.minutes} min`
+              return (
+                <li key={i} className={`path-step ${state}`}>
+                  <span className="path-dot" aria-hidden>
+                    {state === 'is-done' ? <Check size={14} /> : i + 1}
+                  </span>
+                  {state === 'is-current' ? (
+                    <div className="path-body">
+                      <span className="path-kicker">{done === 0 ? 'Start her' : 'Næste'}</span>
+                      <span className="box-title">{STEP_TITLE[step.kind]}</span>
+                      <span className="box-sub">{meta}</span>
+                      <button type="button" className="primary wide" onClick={() => onStartStep(step, i)}>
+                        Start · {step.minutes} min
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="path-body"
+                      onClick={() => onStartStep(step, i)}
+                      aria-label={`${STEP_TITLE[step.kind]}${state === 'is-done' ? ', klaret – tag igen' : ''}`}
+                    >
+                      <span className="box-title">{STEP_TITLE[step.kind]}</span>
+                      <span className="box-sub">{state === 'is-done' ? 'Klaret' : meta}</span>
+                    </button>
+                  )}
+                </li>
+              )
+            })}
+          </ol>
+        </section>
+      )}
+
+      {/* The habit is its own region, so it isn't read as part of today's plan. */}
+      <section className="summary" aria-labelledby="week-h">
+        <div className="page-head">
+          <h2 id="week-h" className="section-title">Din uge</h2>
+          <span className="small muted">
+            {streak > 0 ? `${streak} ${streak === 1 ? 'dag' : 'dage'} i træk` : 'Ingen dage i træk endnu'}
+          </span>
+        </div>
+        <Week practicedDays={practicedDays} today={today} />
+      </section>
+    </div>
+  )
+}
+
+/** This calendar week, Monday to Sunday: practised days filled, today ringed, future days dashed. */
+function Week({ practicedDays, today }: { practicedDays: Set<number>; today: number }) {
+  // Day numbers count from 1 Jan 1970, a Thursday; Monday = 0 here.
+  const monday = today - ((today + 3) % 7)
+  const days = Array.from({ length: 7 }, (_, i) => monday + i)
+  return (
+    <ol className="week" aria-label={`Øvet ${days.filter((d) => practicedDays.has(d)).length} dage i denne uge`}>
+      {days.map((d, i) => {
+        const state = practicedDays.has(d) ? 'is-on' : d > today ? 'is-future' : d === today ? '' : 'is-missed'
+        return (
+          <li key={d} className={`day ${state} ${d === today ? 'is-today' : ''}`}>
+            <span className="day-dot">{practicedDays.has(d) ? <Check size={14} /> : null}</span>
+            <span className="day-label">{WEEKDAY[(i + 1) % 7]}</span>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+/** Expected score against the pass mark, which is drawn as a line on the bar. */
+export function GoalBar({ label, value, goal, max, weak }: { label: string; value: number; goal: number; max: number; weak?: boolean }) {
+  const shown = max > 10 ? Math.round(value) : Math.round(value * 10) / 10
+  return (
+    <div className="req">
+      <div className="req-head">
+        <span>{label}</span>
+        <b>
+          ≈ {shown.toLocaleString('da-DK')} af {max} · krav {goal}
+        </b>
+      </div>
+      <div className={`meter goal-meter ${weak ? 'is-weak' : ''}`}>
+        <span style={{ width: `${(value / max) * 100}%` }} />
+        <i className="mark" style={{ left: `${(goal / max) * 100}%` }} aria-hidden />
+      </div>
+    </div>
+  )
+}
+
+function Confidence({ level, answers }: { level: Readiness['confidence']; answers: number }) {
+  const on = level === 'low' ? 1 : level === 'medium' ? 2 : 3
+  const label = level === 'low' ? 'Foreløbigt' : level === 'medium' ? 'Rimeligt sikkert' : 'Sikkert'
+  return (
+    <span className="glass-chip" title={`Bygger på ${answers} svar`}>
+      <span className="dots" aria-hidden>
+        {[1, 2, 3].map((n) => (
+          <i key={n} className={n <= on ? 'on' : ''} />
+        ))}
+      </span>
+      {label}
+    </span>
+  )
+}
