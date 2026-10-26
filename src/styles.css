@@ -8,7 +8,7 @@
                 written for white paper; inside a card the paper tokens are remapped to dark.
 
    Colour roles:
-   - red   = the brand and the ground. Never "wrong".
+   - red   = the brand and the ground. Only "wrong" in the explanation verdict (light red).
    - white = the main action on the ground (CTA), and "correct" where green can't be read on red.
    - green = correct / done / mastered, on paper.
    - ink   = selection, neutral progress, wrong answers (ink and grey).
@@ -660,6 +660,10 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .summary.explain::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: rgba(255, 255, 255, 0.7); }
 .summary.explain.is-ok { background: linear-gradient(180deg, rgba(47, 191, 107, 0.14), rgba(47, 191, 107, 0.04) 60%), linear-gradient(180deg, #3b3c41, #2d2e32); }
 .summary.explain.is-ok::before { background: var(--good); }
+/* Wrong mirrors right in red: a lighter red reads on graphite (about 4.2:1, large bold text). */
+.summary.explain.is-no { background: linear-gradient(180deg, rgba(255, 59, 85, 0.14), rgba(255, 59, 85, 0.04) 60%), linear-gradient(180deg, #3b3c41, #2d2e32); }
+.summary.explain.is-no::before { background: #ff4d63; }
+.summary.explain .verdict.no { color: #ff6b7d; }
 
 /* ── Reward on a right answer ────────────────────────────────────────────
    Short, one-off and in the brand colours: the picked answer swells once with a green ring

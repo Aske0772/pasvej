@@ -15,7 +15,7 @@ fast bund, så en gennemsigtig grøn eller grå aldrig lader det røde skinne ig
 
 **Spørgsmålsskærme har tre toner**, så delene ikke flyder sammen: spørgsmålet er det mørkeste kort (`#101113`, fladt,
 det skal læses), svarmulighederne er de hævede grafitkort (de kan trykkes på), og forklaringen er det lyseste kort med en
-stribe foroven i dommens farve: grøn ved rigtigt, lys grå ved forkert.
+stribe foroven i dommens farve: grøn ved rigtigt, rød ved forkert. Dommen ("Rigtigt" / "Ikke helt") står i samme farve.
 
 **Paneler** (Profil og "Dine fejl" under Træn) har samme grafitflade. Hver række er bygget ens (lighed): rød ikonflise,
 titel og undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og
@@ -39,7 +39,7 @@ Det giver altid størst kontrast og gentager flaget: hvid på rød, rød på hvi
 ## Farvernes roller
 | Farve | Betyder | Bruges aldrig til |
 |---|---|---|
-| Rød | Pasvej (grunden) og hovedknappen på kort | Forkerte svar og fejl |
+| Rød | Pasvej (grunden) og hovedknappen på kort. Én undtagelse: forklaringen efter et forkert svar, hvor "Ikke helt" og striben er lys rød (`#FF6B7D`), som et spejl af den grønne | Svarfelterne selv: et forkert valgt svar er stadig sort kryds og overstreget grå tekst |
 | Hvid | Hovedknappen på grunden. På grunden betyder hvid også "rigtigt" (fx i fremskridtsbjælken øverst), fordi grønt ikke kan læses på rødt | – |
 | Grøn | Rigtigt, klaret, mestret (på kort) | Knapper |
 | Sort og grå | Neutral: valgt svar, fremskridt, forkert svar (sort kryds og overstreget grå tekst) | – |
