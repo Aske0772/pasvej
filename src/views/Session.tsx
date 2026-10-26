@@ -226,7 +226,7 @@ function Result({
 
           <div className="req">
             <div className="req-head">
-              <span>Til prøven</span>
+              <span>Du står til</span>
               <b>
                 {delta !== 0 && (
                   <span className="delta">
@@ -242,9 +242,8 @@ function Result({
               <span style={{ width: w(shown) }} />
               <i className="mark" style={{ left: w(36) }} aria-hidden />
             </div>
-            <div className="gauge-scale" aria-hidden>
-              <span style={{ left: w(36) }}>krav 36</span>
-            </div>
+            {/* Right under the bar it explains the mark, so the gap to 36 is plain. */}
+            <p className="req-note">Til prøven skal du have 36 af 45 rigtige.</p>
           </div>
 
           <span className="glass-chip result-chip">
