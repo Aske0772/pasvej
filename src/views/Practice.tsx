@@ -4,11 +4,11 @@ import { TOPICS } from '../data/topics'
 import type { CardState } from '../engine/srs'
 import { topicMastery } from '../engine/readiness'
 import { shuffle } from '../engine/exam'
-import { Check, Lock, Redo } from './icons'
+import { Check, Lock } from './icons'
 
 /** Topic mastery at which a chapter counts as mastered. */
 const MASTERED = 0.8
-import { formatDate, Panel, Row } from './ui'
+import { formatDate, Panel } from './ui'
 
 interface Props {
   cards: Record<string, CardState>
@@ -36,13 +36,8 @@ export function Practice({ cards, questions, examDate, locked, onLocked, onStart
         <span className="muted">{questions.length} spørgsmål</span>
       </header>
 
-      <Panel>
-        <Row
-          icon={<Redo size={20} />}
-          title="Dine fejl"
-          sub="Spørgsmål, du har svaret forkert på for nylig"
-          trailing={<span className="panel-num">{mistakes.length}</span>}
-        />
+      {/* Title and count share one line, the explanation sits under them, the button closes the card. */}
+      <Panel title="Dine fejl" sub="Spørgsmål, du har svaret forkert på for nylig" aside={<span className="panel-num">{mistakes.length}</span>}>
         {locked ? (
           <button type="button" className="primary wide" onClick={onLocked}>
             <Lock size={16} /> Træn dine fejl med Basis
