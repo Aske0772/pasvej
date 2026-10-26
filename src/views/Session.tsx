@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import type { Lang } from '../data/types'
 import { QUESTIONS } from '../data/questions'
 import { sourceLabel } from '../data/source'
 import { topicById } from '../data/topics'
 import { withShuffledOptions } from '../engine/exam'
-import { Check, Link, X } from './icons'
+import { Check, Link, Redo, X } from './icons'
 import { buzz } from './ui'
 
 const KEYS = ['A', 'B', 'C', 'D']
@@ -196,15 +196,30 @@ function Result({
       <div className="page" style={{ paddingTop: 16 }}>
         <section className={`hero ${perfect ? 'is-good' : 'is-ink'}`}>
           <p className="hero-label">{title}</p>
-          <p className="hero-num">
+          <p className="hero-num" aria-label={`${correct} af ${questions.length} rigtige`}>
             {correct}
-            <small>af {questions.length} rigtige</small>
+            <small>/{questions.length}</small>
           </p>
+          {/* One cell per question, in the order they came: the result at a glance. */}
+          <ol className="answer-strip" style={{ '--n': Math.min(questions.length, 10) } as CSSProperties} aria-hidden>
+            {results.map((r, i) => (
+              <li key={i} className={r ? 'is-right' : 'is-wrong'} style={{ '--i': i } as CSSProperties}>
+                {r ? <Check size={14} /> : <X size={14} />}
+              </li>
+            ))}
+          </ol>
+
           <div className="req">
             <div className="req-head">
-              <span>Forventet score til prøven</span>
+              <span>Til prøven</span>
               <b>
-                {one(scoreBefore)} → {one(scoreAfter)} af 45
+                {delta !== 0 && (
+                  <span className="delta">
+                    {delta > 0 ? '↑' : '↓'} {one(Math.abs(delta))}
+                  </span>
+                )}
+                {one(scoreAfter)}
+                <small> /45</small>
               </b>
             </div>
             <div className="meter meter-ghost goal-meter">
@@ -212,21 +227,15 @@ function Result({
               <span style={{ width: w(shown) }} />
               <i className="mark" style={{ left: w(36) }} aria-hidden />
             </div>
-            <span className="small" style={{ opacity: 0.75 }}>
-              Stregen er beståelseskravet på 36.
-            </span>
+            <div className="gauge-scale" aria-hidden>
+              <span style={{ left: w(36) }}>krav 36</span>
+            </div>
           </div>
-          {delta !== 0 && (
-            <span className="delta" style={{ alignSelf: 'flex-start' }}>
-              {delta > 0 ? '+' : ''}
-              {one(delta)} {Math.abs(delta) === 1 ? 'rigtigt' : 'rigtige'}
-            </span>
-          )}
-          <p className="hero-note">
-            {perfect
-              ? 'Alt rigtigt. Spørgsmålene kommer igen med længere og længere mellemrum.'
-              : 'Dine fejl kommer igen i dag og igen senere, indtil du kan dem.'}
-          </p>
+
+          <span className="glass-chip result-chip">
+            {perfect ? <Check size={14} /> : <Redo size={14} />}
+            {perfect ? 'Alt rigtigt' : `${wrong.length} fejl kommer igen`}
+          </span>
         </section>
 
         {wrong.length > 0 && (
