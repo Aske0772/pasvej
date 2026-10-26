@@ -10,6 +10,9 @@ boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt p�
 | **Papir** | Hvide kort og bokse til indhold (plan, svar, forklaringer, valg) | Sort og grå |
 | **Blæk** | Ét mørkt kort pr. skærm til det vigtigste (chancen for at bestå, spørgsmålet) | Hvid |
 
+**Header og fanebjælke** er hvidt papir, der rammer den røde grund ind, så de aldrig flyder sammen med den (5,3:1 til 8,6:1
+mod det røde). Ordmærket og den aktive fane er røde, inaktive faner er grå (5,4:1 på hvid).
+
 Succes (prøve bestået, dagen klaret, alt rigtigt) vises som **papir med grønt**, ikke som et grønt kort. Grønt direkte på rødt
 står dårligt i kontrast og ligner jul.
 
