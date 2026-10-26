@@ -9,7 +9,7 @@ import { dayNumber } from './engine/srs'
 import { daysUntil, nextOpenSitting, streak, useAppState } from './store'
 import { Exam } from './views/Exam'
 import { Home } from './views/Home'
-import { Book, Calendar, Clock, Home as HomeIcon, User } from './views/icons'
+import { Book, Clock, Home as HomeIcon, User } from './views/icons'
 import { Onboarding } from './views/Onboarding'
 import { Paywall } from './views/Paywall'
 import { Practice } from './views/Practice'
@@ -157,7 +157,7 @@ export function App() {
             readiness={r}
             plan={plan}
             doneSteps={doneSteps}
-            examDate={state.profile.examDate}
+            daysToExam={daysToExam}
             streak={streak(state.log)}
             practicedDays={new Set(state.log.map((l) => l.day))}
             today={today}
@@ -210,15 +210,7 @@ export function App() {
 
   return (
     <div className="app">
-      {showChrome && (
-        <header className="topbar">
-          <span className="brand">Pasvej</span>
-          <span className="pill">
-            <Calendar size={18} />
-            {daysToExam > 0 ? `${daysToExam} dage` : 'I dag'}
-          </span>
-        </header>
-      )}
+      {/* No header: each screen has its own large title, and the tab bar shows where you are. */}
       <main className="main">{content}</main>
       {showChrome && <TabBar tab={tab} onTab={setTab} />}
     </div>
@@ -294,7 +286,7 @@ function ExamIntro({
 
 const TABS: { id: Tab; label: string; Icon: (p: { size?: number }) => JSX.Element }[] = [
   { id: 'home', label: 'Hjem', Icon: HomeIcon },
-  { id: 'practice', label: 'Øv', Icon: Book },
+  { id: 'practice', label: 'Træn', Icon: Book },
   { id: 'exam', label: 'Prøve', Icon: Clock },
   { id: 'profile', label: 'Profil', Icon: User },
 ]

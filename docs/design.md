@@ -10,15 +10,17 @@ boksene og knapperne formet som piller. Men den er bygget som flaget: **hvidt p�
 | **Papir** | Hvide kort og bokse til indhold (plan, svar, forklaringer, valg) | Sort og grå |
 | **Blæk** | Ét mørkt kort pr. skærm til det vigtigste (chancen for at bestå, spørgsmålet) | Hvid |
 
-**Header og fanebjælke** er hvidt papir, der rammer den røde grund ind, så de aldrig flyder sammen med den (5,3:1 til 8,6:1
-mod det røde). Ordmærket og den aktive fane er røde, inaktive faner er grå (5,4:1 på hvid).
+**Ingen header.** Som i en app starter hver skærm med sin egen store titel, og dagene til prøven står i Hjems titellinje.
+Toppen holder afstand til telefonens statuslinje (`env(safe-area-inset-top)`). **Fanebjælken** i bunden er det eneste faste
+element: hvidt papir, der rammer den røde grund ind (5,3:1 til 8,6:1 mod det røde). Den aktive fane er rød, inaktive er grå
+(5,4:1 på hvid). Fanerne hedder Hjem, Træn, Prøve og Profil.
 
 Succes (prøve bestået, dagen klaret, alt rigtigt) vises som **papir med grønt**, ikke som et grønt kort. Grønt direkte på rødt
 står dårligt i kontrast og ligner jul.
 
 ## Hovedknappen vender sig efter underlaget
 - **På den røde grund:** hvid pille med rød tekst og en lille skygge, fx "Næste", "Start prøven" og "Start testen".
-- **På papir:** rød pille med hvid tekst, fx "Start dagens plan" og "Øv dine fejl".
+- **På papir:** rød pille med hvid tekst, fx "Start dagens plan" og "Træn dine fejl".
 - **Sekundære knapper:** glas (hvid med 16 % dækning og hvid tekst) på grunden, grå på papir.
 
 Det giver altid størst kontrast og gentager flaget: hvid på rød, rød på hvid.
@@ -39,7 +41,7 @@ Et forkert svar vises derfor i sort og grå, og teksten er "Ikke helt" i stedet 
 |---|---|
 | Hvid tekst på grunden | 5,3:1 (øverst) til 8,6:1 (nederst) |
 | Sekundær hvid tekst (92 %) på grunden | 4,65:1 til 7,4:1 |
-| Inaktive faner (68 %) på fanebjælken (`#9A0C24`) | 4,5:1 |
+| Inaktive faner (grå) på den hvide fanebjælke | 5,4:1 |
 | Rød knaptekst på hvid | 5,9:1 |
 
 ## Ydeevne
@@ -88,7 +90,7 @@ Alt, der belønner brugeren, peger tilbage på at bestå prøven. Der er ingen p
 Alle animationer slås fra ved `prefers-reduced-motion`.
 
 ## Temabilleder: fotofliser
-Hvert tema under "Øv" er en **fotoflise**: et næsten kvadratisk kort (4:5) med runde hjørner, to pr. række. Fotoet
+Hvert tema under "Træn" er en **fotoflise**: et næsten kvadratisk kort (4:5) med runde hjørner, to pr. række. Fotoet
 fylder hele flisen, og en mørk gradient nedefra holder teksten læselig i hvidt. Øverst ligger små glas-chips med
 kapitel og antal spørgsmål. Nederst står titlen, en kort forklaring af, hvad temaet handler om (fra kapitlernes
 afsnit i lærematerialet, `blurb` i `topics.ts`), og fremskridtsbjælken med procent. Alle fliser er bygget ens (lighed).

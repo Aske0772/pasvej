@@ -32,7 +32,7 @@ export function Practice({ cards, questions, examDate, locked, onLocked, onStart
   return (
     <div className="page">
       <header className="page-head">
-        <h1>Øv</h1>
+        <h1>Træn</h1>
         <span className="muted">{questions.length} spørgsmål</span>
       </header>
 
@@ -48,11 +48,11 @@ export function Practice({ cards, questions, examDate, locked, onLocked, onStart
         </div>
         {locked ? (
           <button type="button" className="primary wide" onClick={onLocked}>
-            <Lock size={16} /> Øv dine fejl med Basis
+            <Lock size={16} /> Træn dine fejl med Basis
           </button>
         ) : (
           <button type="button" className="primary wide" disabled={!mistakes.length} onClick={() => onStart('Dine fejl', shuffle(mistakes))}>
-            {mistakes.length ? 'Øv dine fejl' : 'Ingen fejl lige nu'}
+            {mistakes.length ? 'Træn dine fejl' : 'Ingen fejl lige nu'}
           </button>
         )}
       </section>

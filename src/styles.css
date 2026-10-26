@@ -91,7 +91,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: var(--ink);
   --muted: var(--muted-paper);
 }
-.summary :focus-visible, .hero.is-good :focus-visible, .tabbar :focus-visible, .app > .topbar :focus-visible { outline-color: var(--ink); outline-offset: -3px; }
+.summary :focus-visible, .hero.is-good :focus-visible, .tabbar :focus-visible { outline-color: var(--ink); outline-offset: -3px; }
 
 /* Layout: the page never scrolls; content scrolls inside .main. */
 .app, .onboarding {
@@ -110,18 +110,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .brand--big { font-size: 64px; font-variation-settings: 'opsz' 48; }
 
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 10px; }
-/* App chrome (header and tab bar) is white paper framing the red ground, so it never blends
-   with it (figure and ground): red wordmark and ink/red controls on white. */
-.app > .topbar {
-  padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: 12px;
-  background: var(--surface); color: var(--ink); --muted: var(--muted-paper);
-  box-shadow: 0 1px 0 var(--line), 0 10px 24px -18px rgba(40, 0, 8, 0.6);
-}
-.app > .topbar .brand { color: var(--accent); }
-/* Space below the header lives inside the scroll area, so no strip of red shows between them. */
-.app > .topbar + .main > .page { padding-top: 16px; }
-.app > .topbar .pill { background: var(--accent-soft); color: var(--accent); box-shadow: none; }
+/* No app header: screens start with their own large title. Keep clear of the phone's status bar
+   (notch, clock) when installed full-screen. */
+.main > .page:first-child { padding-top: calc(16px + env(safe-area-inset-top)); }
+.q-top { padding-top: calc(14px + env(safe-area-inset-top)) !important; }
+.pw-content { padding-top: calc(16px + env(safe-area-inset-top)) !important; }
 .page-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .page-head h1, .onboarding h1 { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1.05; letter-spacing: -0.03em; }
 .section-title { font-size: 15px; font-weight: 650; }
@@ -326,7 +319,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .answer-line { font-size: 14px; font-weight: 650; color: var(--good); }
 
 /* Onboarding */
-.onboarding { padding: 32px 16px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
+.onboarding { padding: calc(32px + env(safe-area-inset-top)) 16px 32px; display: flex; flex-direction: column; gap: 28px; overflow-y: auto; }
 .onboarding-head { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
 .onboarding h1 { font-size: 30px; line-height: 1.1; max-width: 16ch; }
 .onboarding section { display: flex; flex-direction: column; gap: 12px; }

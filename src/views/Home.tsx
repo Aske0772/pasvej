@@ -2,13 +2,13 @@ import type { Readiness } from '../engine/readiness'
 import type { PlanStep } from '../engine/plan'
 import { topicById } from '../data/topics'
 import { Check } from './icons'
-import { formatDate, STEP_TITLE } from './ui'
+import { STEP_TITLE } from './ui'
 
 interface Props {
   readiness: Readiness
   plan: PlanStep[]
   doneSteps: Set<number>
-  examDate: string
+  daysToExam: number
   streak: number
   /** Day numbers with at least one finished session. */
   practicedDays: Set<number>
@@ -22,7 +22,7 @@ interface Props {
 const pct = (x: number) => Math.round(x * 100)
 const WEEKDAY = ['S', 'M', 'T', 'O', 'T', 'F', 'L']
 
-export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDays, today, freeTier, onStartStep, onPractice }: Props) {
+export function Home({ readiness, plan, doneSteps, daysToExam, streak, practicedDays, today, freeTier, onStartStep, onPractice }: Props) {
   const weak = readiness.pValues < readiness.pTotal ? 'values' : 'total'
   const done = plan.filter((_, i) => doneSteps.has(i)).length
   const nextIndex = plan.findIndex((_, i) => !doneSteps.has(i))
@@ -32,7 +32,9 @@ export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDa
     <div className="page">
       <header className="page-head">
         <h1>I dag</h1>
-        <span className="muted">Prøve {formatDate(examDate, { day: 'numeric', month: 'short' })}</span>
+        <span className="muted">
+          {daysToExam > 1 ? `${daysToExam} dage til prøven` : daysToExam === 1 ? 'Prøven er i morgen' : 'Prøven er i dag'}
+        </span>
       </header>
 
       {/* The goal: one figure on the page. */}
@@ -65,7 +67,7 @@ export function Home({ readiness, plan, doneSteps, examDate, streak, practicedDa
               : 'Planen for i morgen er klar, når du kommer tilbage.'}
           </p>
           <button type="button" className={freeTier ? 'primary' : 'secondary'} onClick={onPractice}>
-            {freeTier ? 'Se abonnementer' : 'Øv mere'}
+            {freeTier ? 'Se abonnementer' : 'Træn mere'}
           </button>
         </section>
       ) : (
