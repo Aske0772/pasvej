@@ -81,7 +81,7 @@ Problemer i den første version, og hvordan de er løst:
 | **Kontinuitet** | Planens trin er forbundet af en linje, og linjen bliver grøn, når trinnet er klaret. Efter et trin tilbydes næste trin direkte | Dagen føles som én vej, ikke tre opgaver |
 | **Lighed** | Alt, der kan trykkes på, er et grafitkort med pil. Ting, der ikke er klar endnu, har stiplet kant uden pil (aktuelt, låste prøver) | Det er tydeligt, hvad der er interaktivt |
 | **Fælles skæbne** | Det rigtige svar, flueben og "rigtige i træk" animeres samtidigt | Belønningen opleves som én begivenhed |
-| **Lukning** | Ugens syv felter og planens segmenter "fyldes op". Bjælkerne på kortet med chancen for at bestå har en streg ved kravet (36 af 45 og 4 af 5) | Et ufærdigt mønster motiverer, og afstanden til målet kan ses |
+| **Lukning** | Ugens syv felter og planens segmenter "fyldes op". Chancen for at bestå er en ring, der lukker sig (grøn fra 70 %), og de to krav står som to ens fliser med en streg ved kravet (36 af 45 og 4 af 5). Den flise, der holder dig mest tilbage, har rød kant og mærket "Fokus" i stedet for en forklarende sætning | Et ufærdigt mønster motiverer, og afstanden til målet kan ses |
 | **Prägnanz (enkelhed)** | Statistikfelterne med "svar i alt" og "læremateriale %" er fjernet, fordi de gentog kortet | Mindre støj og ét tal at forholde sig til |
 
 ## Gamification: kun det, der hænger sammen med målet

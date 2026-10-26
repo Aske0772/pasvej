@@ -718,3 +718,35 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
   .option.is-win, .option.is-win::after, .burst i, .q-top .segments span.is-ok, .streak, .streak::after, .streak.is-hot svg { animation: none; }
   .option.is-win::after, .burst { display: none; }
 }
+
+/* Pass chance on Home: a ring with the figure inside, then the two requirements as twin tiles.
+   The tile holding the learner back gets a red edge and a "Fokus" tag instead of a sentence. */
+.ready-top { display: flex; align-items: center; gap: 18px; }
+.ready-meta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.ready-meta .hero-label { white-space: normal; }
+.ring { position: relative; width: 104px; height: 104px; flex: none; }
+.ring svg { display: block; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 9; }
+.ring-track { stroke: rgba(255, 255, 255, 0.1); }
+.ring-fill { stroke: #fff; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ring.is-good .ring-fill { stroke: var(--good); }
+.ring-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 34px; font-weight: 800; letter-spacing: -0.04em;
+}
+.ring-num small { font-family: var(--body); font-size: 14px; font-weight: 600; letter-spacing: 0; opacity: 0.7; margin: 8px 0 0 2px; }
+
+.goal-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.goal-tile {
+  display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.goal-tile.is-focus { background: rgba(255, 59, 85, 0.08); box-shadow: inset 0 0 0 1.5px rgba(255, 107, 125, 0.65); }
+.goal-tile-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 12px; font-weight: 650; color: rgba(255, 255, 255, 0.72); }
+.goal-tile-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #ff7b8b; }
+.goal-tile-num { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.goal-tile-num small { font-family: var(--body); font-size: 13px; font-weight: 600; letter-spacing: 0; opacity: 0.6; margin-left: 2px; }
+.goal-tile-foot { font-size: 12px; color: rgba(255, 255, 255, 0.72); }
+.goal-tile-foot b { color: #fff; font-weight: 800; }
+.goal-tile.is-focus .meter span { background: #ff6b7d; }
+@media (prefers-reduced-motion: reduce) { .ring-fill { transition: none; } }

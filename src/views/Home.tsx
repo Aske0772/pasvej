@@ -37,24 +37,20 @@ export function Home({ readiness, plan, doneSteps, daysToExam, streak, practiced
         </span>
       </header>
 
-      {/* The goal: one figure on the page. */}
+      {/* The goal: one figure on the page, as a ring. The two requirements sit underneath as
+          twin tiles (similarity); the one holding you back is marked "Fokus" instead of a sentence. */}
       <section className="hero" aria-labelledby="readiness-h">
-        <div className="hero-row">
-          <div>
+        <div className="ready-top">
+          <Ring value={readiness.pass} />
+          <div className="ready-meta">
             <p id="readiness-h" className="hero-label">Chance for at bestå</p>
-            <p className="hero-num">
-              {pct(readiness.pass)}
-              <small>%</small>
-            </p>
+            <Confidence level={readiness.confidence} answers={readiness.answers} />
           </div>
-          <Confidence level={readiness.confidence} answers={readiness.answers} />
         </div>
-        <GoalBar label="Rigtige i alt" value={readiness.expectedTotal} goal={36} max={45} weak={weak === 'total'} />
-        <GoalBar label="Værdispørgsmål" value={readiness.expectedValues} goal={4} max={5} weak={weak === 'values'} />
-        <p className="hero-note">
-          {readiness.confidence === 'low' && `Tallet bygger kun på ${readiness.answers} svar og stiger, når du øver. `}
-          Lige nu holder {weak === 'values' ? 'værdispørgsmålene' : 'antallet af rigtige'} dig mest tilbage.
-        </p>
+        <div className="goal-tiles">
+          <GoalTile label="Rigtige i alt" value={readiness.expectedTotal} goal={36} max={45} focus={weak === 'total'} />
+          <GoalTile label="Værdispørgsmål" value={readiness.expectedValues} goal={4} max={5} focus={weak === 'values'} />
+        </div>
       </section>
 
       {allDone ? (
@@ -151,20 +147,45 @@ function Week({ practicedDays, today }: { practicedDays: Set<number>; today: num
 }
 
 /** Expected score against the pass mark, which is drawn as a line on the bar. */
-export function GoalBar({ label, value, goal, max, weak }: { label: string; value: number; goal: number; max: number; weak?: boolean }) {
+/** Pass chance as a ring with the percentage inside; green once it is likely (70 % or more). */
+function Ring({ value }: { value: number }) {
+  const r = 44
+  const c = 2 * Math.PI * r
+  return (
+    <div className={`ring ${value >= 0.7 ? 'is-good' : ''}`} role="img" aria-label={`${pct(value)} % chance for at bestå`}>
+      <svg viewBox="0 0 104 104" width="104" height="104" aria-hidden>
+        <circle className="ring-track" cx="52" cy="52" r={r} />
+        {/* At 0 % the round line cap would still draw a dot, so leave the fill out. */}
+        {pct(value) > 0 && <circle className="ring-fill" cx="52" cy="52" r={r} strokeDasharray={c} strokeDashoffset={c * (1 - value)} />}
+      </svg>
+      <span className="ring-num" aria-hidden>
+        {pct(value)}
+        <small>%</small>
+      </span>
+    </div>
+  )
+}
+
+/** One requirement: expected score, a bar with the pass mark, and the requirement. */
+function GoalTile({ label, value, goal, max, focus }: { label: string; value: number; goal: number; max: number; focus: boolean }) {
   const shown = max > 10 ? Math.round(value) : Math.round(value * 10) / 10
   return (
-    <div className="req">
-      <div className="req-head">
+    <div className={`goal-tile ${focus ? 'is-focus' : ''}`}>
+      <div className="goal-tile-head">
         <span>{label}</span>
-        <b>
-          ≈ {shown.toLocaleString('da-DK')} af {max} · krav {goal}
-        </b>
+        {focus && <span className="goal-tile-tag">Fokus</span>}
       </div>
-      <div className={`meter goal-meter ${weak ? 'is-weak' : ''}`}>
+      <p className="goal-tile-num">
+        {shown.toLocaleString('da-DK')}
+        <small>/{max}</small>
+      </p>
+      <div className="meter goal-meter">
         <span style={{ width: `${(value / max) * 100}%` }} />
         <i className="mark" style={{ left: `${(goal / max) * 100}%` }} aria-hidden />
       </div>
+      <p className="goal-tile-foot">
+        krav <b>{goal}</b>
+      </p>
     </div>
   )
 }
