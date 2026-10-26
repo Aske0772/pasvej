@@ -28,7 +28,7 @@ const FREE_FEATURES: Feature[] = [
 
 const BASIS_FEATURES: Feature[] = [
   { text: 'Ubegrænset øvelse i alle spørgsmål' },
-  { text: 'Prøven som på prøvedagen: 45 spørgsmål på 45 min' },
+  { text: 'Prøven som på prøvedagen: samme opbygning, tid og krav' },
   { text: 'De 6 kapitler fra lærematerialet' },
   { text: '2 ekstra kapitler: Danske værdier og Aktuelle begivenheder' },
   { text: 'Dagens plan og øvelse af dine fejl' },

@@ -94,7 +94,7 @@ export function Profile({ profile, onChange, tier, onChangePlan, onReset }: Prop
       </Panel>
 
       <Panel title="Din vej" sub="Én profil på tværs af prøverne. Dine data følger med, når du går videre.">
-        <div className="panel-list">
+        <div className="panel-list divided">
           {LADDER.map((s) => (
             <Row
               key={s.id}

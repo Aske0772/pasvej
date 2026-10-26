@@ -87,19 +87,21 @@ export function Exam({ paper, onAnswer, onDone, onExit }: Props) {
 
           <section className="summary">
             <h2 className="section-title">Pr. tema</h2>
-            {byTopic.map(({ t, n, ok }) => (
-              <div key={t.id} className="req">
-                <div className="req-head">
-                  <span>{t.name.da}</span>
-                  <b>
-                    {ok}/{n}
-                  </b>
+            <div className="divided">
+              {byTopic.map(({ t, n, ok }) => (
+                <div key={t.id} className="req">
+                  <div className="req-head">
+                    <span>{t.name.da}</span>
+                    <b>
+                      {ok}/{n}
+                    </b>
+                  </div>
+                  <div className={`meter ${ok === n ? 'is-good' : ''}`}>
+                    <span style={{ width: `${(ok / n) * 100}%` }} />
+                  </div>
                 </div>
-                <div className={`meter ${ok === n ? 'is-good' : ''}`}>
-                  <span style={{ width: `${(ok / n) * 100}%` }} />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </section>
 
           {/* Mistakes grouped by chapter, so what to read is one region per chapter (proximity). */}

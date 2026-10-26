@@ -109,7 +109,7 @@ function TierCard({
         </button>
       </div>
 
-      <ul className="tier-features">
+      <ul className="tier-features divided">
         {plan.features.map((f) => (
           <li key={f.text}>
             <Check size={15} />

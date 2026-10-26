@@ -18,6 +18,10 @@ fast bund, så en gennemsigtig grøn eller grå aldrig lader det røde skinne ig
 det skal læses), svarmulighederne er de hævede grafitkort (de kan trykkes på), og forklaringen er det lyseste kort med en
 stribe foroven i dommens farve: grøn ved rigtigt, rød ved forkert. Dommen ("Rigtigt" / "Ikke helt") står i samme farve.
 
+**Skillelinjer** (hvid med 10 %, lidt mere på paywallens glas) sættes kun, hvor en liste læses række for række:
+prøvens fakta, resultat pr. tema, abonnementernes fordele og "Din vej", samt mellem de to grupper i "Din fremgang".
+Ikke på valg (de har deres egen valgt-tilstand), separate bokse eller planens sti (den har sin egen linje).
+
 **Paneler** (Profil og "Dine fejl" under Træn) har samme grafitflade. Hver række er bygget ens (lighed): rød ikonflise,
 titel og undertekst, og en kvadratisk handling til højre (pil, afkrydsning, − og +). Den valgte række får en lys ramme og
 en hvid afkrydsning. Hovedhandlingen på et kort er den røde pille.

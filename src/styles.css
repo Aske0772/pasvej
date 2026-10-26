@@ -753,9 +753,16 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .goal-tile.is-focus .meter span { background: #ff6b7d; }
 @media (prefers-reduced-motion: reduce) { .ring-fill { transition: none; } }
 
-/* Fact rows (exam intro): a faint line between rows so the eye can run along each one. */
-.info-rows { display: flex; flex-direction: column; }
-.info-row { padding: 12px 0; font-size: 15px; }
-.info-row:first-child { padding-top: 0; }
-.info-row + .info-row { border-top: 1px solid rgba(255, 255, 255, 0.1); }
-.info-rows + p { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+/* Dividers: a faint line between the rows of a list, so the eye can run along each row and
+   find the next one. Only for lists that are read row by row (facts, scores per topic, plan
+   features, the exam ladder) and to split two groups inside one card. Not on choices (they
+   have their own selected state), separate boxes or the plan path (it has its own line). */
+.divided { display: flex; flex-direction: column; gap: var(--divide-gap, 12px); }
+.divided > * + * { border-top: 1px solid var(--divide-line, rgba(255, 255, 255, 0.1)); padding-top: var(--divide-gap, 12px); }
+.info-rows { font-size: 15px; }
+.info-rows + p, .count-rings + .hero-label { padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.count-rings + .hero-label { padding-top: 14px; }
+.tier-features.divided { --divide-gap: 9px; --divide-line: rgba(255, 255, 255, 0.14); }
+.panel-list.divided { --divide-gap: 0px; }
+.panel-list.divided > * + * { padding-top: 8px; }
+.info-rows + p b { color: #fff; font-weight: 700; }

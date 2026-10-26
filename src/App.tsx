@@ -256,9 +256,9 @@ function ExamIntro({
       </section>
 
       <section className="summary">
-        <div className="info-rows">
+        <div className="divided info-rows">
           {rows.map(([k, v]) => (
-            <div key={k} className="req-head info-row">
+            <div key={k} className="req-head">
               <span>{k}</span>
               <b>{v}</b>
             </div>
@@ -266,8 +266,9 @@ function ExamIntro({
         </div>
         {paper.ids.length < 45 && (
           <p className="small muted">
-            Den rigtige prøve har 45 spørgsmål og kræver 36 rigtige.
-            {paper.currentCount < 5 && ' Aktuelle spørgsmål til din prøvedato kommer løbende frem mod prøven.'} Prøven her er skaleret ned.
+            Den rigtige prøve har <b>45</b> spørgsmål på 45 min og kræver <b>36</b> rigtige. De{' '}
+            {5 - paper.currentCount} aktuelle spørgsmål til din prøvedato kan først laves tættere på prøven, så her får du{' '}
+            {paper.ids.length} og skal have {paper.passTotal} rigtige.
           </p>
         )}
       </section>
