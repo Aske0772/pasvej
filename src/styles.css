@@ -766,3 +766,22 @@ button.prow-action:active:not(:disabled) { transform: scale(0.94); background: r
 .panel-list.divided { --divide-gap: 0px; }
 .panel-list.divided > * + * { padding-top: 8px; }
 .info-rows + p b { color: #fff; font-weight: 700; }
+
+/* Fold-out explanation inside a card: a quiet text button with a chevron that turns down when
+   open, and the explanation as a short list right under it (proximity). */
+.disclosure { margin-top: -4px; }
+.disclosure-toggle {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0;
+  font-size: 14px; font-weight: 650; color: #fff; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.35); text-underline-offset: 3px;
+}
+.disclosure-toggle svg { transition: transform 0.2s ease; }
+.disclosure.is-open .disclosure-toggle svg { transform: rotate(90deg); }
+.disclosure-body {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 4px; padding: 14px 14px 14px 30px; border-radius: 14px;
+  list-style: disc; font-size: 14px; line-height: 1.45; color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  animation: rise 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.disclosure-body li::marker { color: #ff7b8b; }
+.disclosure-body b { color: #fff; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .disclosure-toggle svg { transition: none; } .disclosure-body { animation: none; } }

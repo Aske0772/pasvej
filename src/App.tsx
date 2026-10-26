@@ -8,6 +8,7 @@ import { practiceStats, readiness } from './engine/readiness'
 import { dayNumber } from './engine/srs'
 import { daysUntil, nextOpenSitting, streak, useAppState } from './store'
 import { Exam } from './views/Exam'
+import { MissingCurrent } from './views/MissingCurrent'
 import { Home } from './views/Home'
 import { Book, Clock, Home as HomeIcon, User } from './views/icons'
 import { Onboarding } from './views/Onboarding'
@@ -270,6 +271,9 @@ function ExamIntro({
             {5 - paper.currentCount} aktuelle spørgsmål til din prøvedato kan først laves tættere på prøven, så her får du{' '}
             {paper.ids.length} og skal have {paper.passTotal} rigtige.
           </p>
+        )}
+        {paper.currentCount < 5 && (
+          <MissingCurrent examDate={examDate} missing={5 - paper.currentCount} count={paper.ids.length} passTotal={paper.passTotal} />
         )}
       </section>
 
